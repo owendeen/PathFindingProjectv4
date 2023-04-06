@@ -11,4 +11,16 @@ public class Node {
     private boolean diagDL;
     private boolean visited;
     private boolean solved;
+    public Node(boolean up, boolean down, boolean left, boolean right, boolean diagUR, boolean diagUL, boolean diagDR, boolean diagDL, boolean solved, boolean visited){
+        this.up = up;
+        this.down = down;
+        this.left = left;
+        this.right = right;
+        this.diagUR = diagUR;
+        this.diagUL = diagUL;
+        this.diagDR = diagDR;
+        this.diagDL = diagDL;
+        this.solved = solved;
+        this.visited = visited;
+    }
 }
