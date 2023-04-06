@@ -16,9 +16,18 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 
 import javafx.event.ActionEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class Homepage implements Initializable{
 
+    private double paneWidth;
+    private double paneHeight;
+
+    private int xside_length = 30;
+    private int yside_length = 36;
+
+    public AnchorPane gamePane;
 
     public ComboBox optionSelect;
 
@@ -32,6 +41,40 @@ public class Homepage implements Initializable{
         );
 
         optionSelect.setItems(options);
+        makeGrid();
+    }
+
+    private void makeGrid(){
+
+        paneWidth = gamePane.getPrefWidth();
+        paneHeight = gamePane.getPrefHeight() - 40;
+
+//        for(int rows = 0; rows <= xside_length; xside_length += 30){
+//            for(int cols = 0; cols <= yside_length; cols++){
+//
+//                Rectangle rectangle = new Rectangle()
+//            }
+//        }
+
+        for (int y = 40; y<= 400; y += 36) {
+
+            for (int x = 0; x<= 600; x += 30) {
+
+                Rectangle test = new Rectangle();
+                test.setHeight(36);
+                test.setWidth(30);
+                test.setX(x);
+                test.setY(y);
+
+                test.setStroke(Color.BLACK);
+                test.setFill(Color.LIGHTGRAY);
+                gamePane.getChildren().add(test);
+
+            }
+        }
+
+
+
     }
 
     @FXML
@@ -48,6 +91,8 @@ public class Homepage implements Initializable{
     void findPath(ActionEvent event) {
 
     }
+
+
 
 }
 
