@@ -19,7 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class Homepage implements Initializable{
+public class Homepage implements Initializable {
 
     private double paneWidth;
     private double paneHeight;
@@ -32,7 +32,7 @@ public class Homepage implements Initializable{
     public ComboBox optionSelect;
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle){
+    public void initialize(URL url, ResourceBundle resourceBundle) {
 
         ObservableList<String> options = FXCollections.observableArrayList(
                 "Start",
@@ -45,7 +45,7 @@ public class Homepage implements Initializable{
 
     }
 
-    private void makeGrid(){
+    private void makeGrid() {
 
         paneWidth = gamePane.getPrefWidth();
         paneHeight = gamePane.getPrefHeight() - 40;
@@ -56,9 +56,9 @@ public class Homepage implements Initializable{
 //                Rectangle rectangle = new Rectangle()
 //            }
 //        }
-        for (int y = 40; y<= 400; y += 36) {
+        for (int y = 40; y <= 400; y += 36) {
 
-            for (int x = 0; x<= 600; x += 30) {
+            for (int x = 0; x <= 600; x += 30) {
 
                 Rectangle test = new Rectangle();
                 test.setHeight(36);
@@ -75,8 +75,8 @@ public class Homepage implements Initializable{
         }
 
 
-
     }
+
     public void makenodearray() {
         Node[][] nodes = new Node[10][20];
         for (int y = 40; y <= 400; y += 36) {
@@ -95,6 +95,7 @@ public class Homepage implements Initializable{
             }
         }
     }
+
     @FXML
     void actionSelect(ActionEvent event) {
 
@@ -107,10 +108,6 @@ public class Homepage implements Initializable{
 
     @FXML
     void findPath(ActionEvent event) {
-
-    }
-
-    public static void main (String[] args){
 
     }
 }
