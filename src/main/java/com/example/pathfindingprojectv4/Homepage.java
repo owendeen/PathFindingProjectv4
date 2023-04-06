@@ -42,6 +42,7 @@ public class Homepage implements Initializable{
 
         optionSelect.setItems(options);
         makeGrid();
+
     }
 
     private void makeGrid(){
@@ -55,7 +56,6 @@ public class Homepage implements Initializable{
 //                Rectangle rectangle = new Rectangle()
 //            }
 //        }
-        Node[][] nodes = new Node[10][20];
         for (int y = 40; y<= 400; y += 36) {
 
             for (int x = 0; x<= 600; x += 30) {
@@ -71,17 +71,30 @@ public class Homepage implements Initializable{
                 gamePane.getChildren().add(test);
 
 
-                Node node = new Node(x / 30, y / 36 );
-                nodes[y/36][x/30] = node;
-
-
             }
         }
 
 
 
     }
+    public void makenodearray() {
+        Node[][] nodes = new Node[10][20];
+        for (int y = 40; y <= 400; y += 36) {
 
+            for (int x = 0; x <= 600; x += 30) {
+
+                Node node = new Node(x / 30, y / 36);
+                nodes[y / 36][x / 30] = node;
+
+
+            }
+        }
+        for (int x = 0; x <= 9; x++) {
+            for (int y = 0; y <= 19; y++) {
+                System.out.print(nodes[x][y]);
+            }
+        }
+    }
     @FXML
     void actionSelect(ActionEvent event) {
 
@@ -97,8 +110,9 @@ public class Homepage implements Initializable{
 
     }
 
+    public static void main (String[] args){
 
-
+    }
 }
 
 
