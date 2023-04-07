@@ -3,10 +3,14 @@ package com.example.pathfindingprojectv4;
 //package com.example.setuptest;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,7 +33,7 @@ public class Homepage implements Initializable {
     private double paneWidth;
     private double paneHeight;
 
-    Rectangle[][] rectangles = new Rectangle[10][20]; // array is [row][col]
+    Rectangle[][] rectangles = new Rectangle[15][30]; // array is [row][col]
 
     public AnchorPane gamePane;
 
@@ -37,6 +41,8 @@ public class Homepage implements Initializable {
 
     @FXML
     private ComboBox<String> optionSelect;
+
+    @FXML ComboBox<String> optionPath;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -48,6 +54,16 @@ public class Homepage implements Initializable {
         );
 
         optionSelect.setItems(options);
+
+        ObservableList<String> paths = FXCollections.observableArrayList(
+                "Random Walk",
+                "A Star",
+                "Dijkstra"
+        );
+
+        optionSelect.setItems(options);
+        optionPath.setItems(paths);
+
         makeGrid();
 
 
@@ -65,7 +81,7 @@ public class Homepage implements Initializable {
 
 
     @FXML
-    void planeClicked(MouseEvent event) {
+    void paneClicked(MouseEvent event) {
         drawRectangle(event);
     }
 
@@ -84,7 +100,7 @@ public class Homepage implements Initializable {
         double mouseX = event.getX();
         double mouseY = event.getY();
         int x = (int) mouseX / 30; // num of col
-        int y = (int) (mouseY-40) / 36; // num of row
+        int y = (int) (mouseY-40) / 30; // num of row
 
         Rectangle rectangle = rectangles[y][x];
         rectangle.setFill(color);
@@ -100,13 +116,13 @@ public class Homepage implements Initializable {
 
         int indcROW = -1;
 
-        for (int row = 40; row < 400; row += 36) {
+        for (int row = 40; row < 490; row += 30) {
             indcROW += 1;
             int indcCOL = -1;
-            for (int col = 0; col < 600; col += 30) {
+            for (int col = 0; col < 900; col += 30) {
                 indcCOL += 1;
                 Rectangle rectangle = new Rectangle();
-                rectangle.setHeight(36);
+                rectangle.setHeight(30);
                 rectangle.setWidth(30);
                 rectangle.setX(col);
                 rectangle.setY(row);
@@ -130,7 +146,7 @@ public class Homepage implements Initializable {
                 gamePane.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        planeClicked(event);
+                        paneClicked(event);
                     }
                 });
 
@@ -150,10 +166,91 @@ public class Homepage implements Initializable {
 
     }
 
-    @FXML
-    void findPath(ActionEvent event) {
 
+
+
+    public Rectangle findStartNode() {
+        for(int row = 0; row < 15;  row++){
+            for(int col = 0; col < 30; col++){
+                Rectangle value = rectangles[row][col];
+                if(value.getFill().equals(Color.BLUE)){
+                    return value;
+                }
+            }
+        }
+        return null;
     }
-}
+
+    public Rectangle findEndNode() {
+        for (int row = 0; row < 15; row++) {
+            for (int col = 0; col < 30; col++) {
+                Rectangle value = rectangles[row][col];
+                if (value.getFill().equals(Color.RED)) {
+                    return value;
+                }
+            }
+        }
+        return null;
+    }
+
+    @FXML
+    public void findPath() {
+        String pathOption = optionPath.getValue();
+        if(pathOption.equals("Random Walk")){
+        performRandomWalk();}
+    }
+
+    public void performRandomWalk() {
+        // find start and end nodes
+        Rectangle startNode = findStartNode();
+        Rectangle endNode = findEndNode();
+        if (startNode == null || endNode == null) {
+            System.out.println("Error: Start or end node not found.");
+            return;
+        }
+
+        // create path
+        ArrayList<Rectangle> path = new ArrayList<>();
+        path.add(startNode);
+        Rectangle currentNode = startNode;
+        while (!currentNode.equals(endNode)) {
+            // get neighbors of current node
+            ArrayList<Rectangle> neighbors = new ArrayList<>();
+            int currentRow = (int) (currentNode.getY() - 40) / 30;
+            int currentCol = (int) currentNode.getX() / 30;
+            if (currentRow > 0) {
+                neighbors.add(rectangles[currentRow-1][currentCol]); // up
+            }
+            if (currentRow < 14) {
+                neighbors.add(rectangles[currentRow+1][currentCol]); // down
+            }
+            if (currentCol > 0) {
+                neighbors.add(rectangles[currentRow][currentCol-1]); // left
+            }
+            if (currentCol < 29) {
+                neighbors.add(rectangles[currentRow][currentCol+1]); // right
+            }
+
+            // choose a random neighbor and add it to path
+            Random rand = new Random();
+            Rectangle nextNode = neighbors.get(rand.nextInt(neighbors.size()));
+            if (nextNode != startNode && nextNode != endNode) {
+                path.add(nextNode);
+                nextNode.setFill(Color.GRAY);
+            }
+
+
+            currentNode = nextNode;
+
+
+        }
+    }}
+
+
+
+
+
+
+
 
 

@@ -1,6 +1,10 @@
 package com.example.pathfindingprojectv4;
 
 import javafx.scene.shape.Rectangle;
+
+/**
+ *  I am not sure if we need this class - owen
+ */
 public class Node {
     private Rectangle rectangle;
     private double x;
