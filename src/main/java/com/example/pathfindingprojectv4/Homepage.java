@@ -193,6 +193,10 @@ public class Homepage implements Initializable {
         return null;
     }
 
+    private boolean isWall(Rectangle cell) {
+        return cell.getFill().equals(Color.BLACK);
+    }
+
     @FXML
     public void findPath() {
         String pathOption = optionPath.getValue();
@@ -218,16 +222,16 @@ public class Homepage implements Initializable {
             ArrayList<Rectangle> neighbors = new ArrayList<>();
             int currentRow = (int) (currentNode.getY() - 40) / 30;
             int currentCol = (int) currentNode.getX() / 30;
-            if (currentRow > 0) {
+            if ((currentRow > 0) && !isWall(rectangles[currentRow-1][currentCol])) {
                 neighbors.add(rectangles[currentRow-1][currentCol]); // up
             }
-            if (currentRow < 14) {
+            if ((currentRow < 14) && !isWall(rectangles[currentRow+1][currentCol])) {
                 neighbors.add(rectangles[currentRow+1][currentCol]); // down
             }
-            if (currentCol > 0) {
+            if ((currentCol > 0) && !isWall(rectangles[currentRow][currentCol-1])) {
                 neighbors.add(rectangles[currentRow][currentCol-1]); // left
             }
-            if (currentCol < 29) {
+            if ((currentCol < 29) && !isWall(rectangles[currentRow][currentCol+1])) {
                 neighbors.add(rectangles[currentRow][currentCol+1]); // right
             }
 
