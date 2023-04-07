@@ -9,25 +9,7 @@
         <ComboBox fx:id="optionSelect" layoutX="60.0" layoutY="9.0" onAction="#actionSelect" prefWidth="150.0" />
         <Button layoutX="210.0" layoutY="9.0" mnemonicParsing="false" onAction="#findPath" text="Find path" />
         <Button layoutX="14.0" layoutY="9.0" mnemonicParsing="false" onAction="#clearWindow" text="Clear" />
+
     </children>
 </AnchorPane>
 
-
-
-
-<!--<?xml version="1.0" encoding="UTF-8"?>-->
-
-<!--<?import javafx.geometry.Insets?>-->
-<!--<?import javafx.scene.control.Label?>-->
-<!--<?import javafx.scene.layout.VBox?>-->
-
-<!--<?import javafx.scene.control.Button?>-->
-<!--<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"-->
-<!--      fx:controller="com.example.pathfindingprojectv4.HelloController">-->
-<!--    <padding>-->
-<!--        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>-->
-<!--    </padding>-->
-
-<!--    <Label fx:id="welcomeText"/>-->
-<!--    <Button text="Hello!" onAction="#onHelloButtonClick"/>-->
-<!--</VBox>-->
