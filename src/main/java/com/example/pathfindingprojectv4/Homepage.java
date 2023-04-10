@@ -164,6 +164,8 @@ public class Homepage implements Initializable {
     @FXML
     void clearWindow(ActionEvent event) {
 
+        makeGrid(); // Clear button now works -zack g
+
     }
 
 
