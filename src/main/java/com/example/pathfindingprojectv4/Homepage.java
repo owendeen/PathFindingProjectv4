@@ -206,7 +206,7 @@ public class Homepage implements Initializable {
         if(pathOption.equals("Random Walk")){
             ArrayList<Rectangle> path = performRandomWalk();
             Iterator<Rectangle> nodeIterator = path.iterator();
-            //nodeIterator.next();
+            nodeIterator.next();
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
                 nodeIterator.next().setFill(Color.GRAY); // iterator is recatangle
 
