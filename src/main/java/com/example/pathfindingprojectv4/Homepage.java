@@ -111,11 +111,11 @@ public class Homepage implements Initializable {
 
     private void makeGrid() {
         paneWidth = gamePane.getPrefWidth();
-        paneHeight = gamePane.getPrefHeight() - 40;
+        paneHeight = gamePane.getPrefHeight() - 40; // subtract 40 because of header height
 
 
         int indcROW = -1;
-
+        // dependent on the row and col 15 x 30 and then each is 30 x 30
         for (int row = 40; row < 490; row += 30) {
             indcROW += 1;
             int indcCOL = -1;
@@ -130,6 +130,7 @@ public class Homepage implements Initializable {
 
 
                 rectangles[indcROW][indcCOL] = rectangle;
+
 
 
                 /* This probably is not needed
@@ -200,23 +201,32 @@ public class Homepage implements Initializable {
     }
 
     @FXML
-    public void findPath() {
+    public void findPath(ActionEvent event) {
         String pathOption = optionPath.getValue();
         if(pathOption.equals("Random Walk")){
-        performRandomWalk();}
+            ArrayList<Rectangle> path = performRandomWalk();
+            Iterator<Rectangle> nodeIterator = path.iterator();
+            //nodeIterator.next();
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
+                nodeIterator.next().setFill(Color.GRAY); // iterator is recatangle
+
+            }));
+            timeline.setCycleCount(path.size() - 1);
+            timeline.playFromStart();
+
+            //timeline.setOnFinished(e -> findPathTraversal());
+
+
+        }
     }
 
-    public void performRandomWalk() {
+    public ArrayList<Rectangle> performRandomWalk() {
         // find start and end nodes
         Rectangle startNode = findStartNode();
         Rectangle endNode = findEndNode();
-        if (startNode == null || endNode == null) {
-            System.out.println("Error: Start or end node not found.");
-            return;
-        }
 
         // create path
-        ArrayList<Rectangle> path = new ArrayList<>();
+        ArrayList<Rectangle> path = new ArrayList<>(); // path to go
         path.add(startNode);
         Rectangle currentNode = startNode;
         while (!currentNode.equals(endNode)) {
@@ -242,15 +252,15 @@ public class Homepage implements Initializable {
             Rectangle nextNode = neighbors.get(rand.nextInt(neighbors.size()));
             if (nextNode != startNode && nextNode != endNode) {
                 path.add(nextNode);
-                nextNode.setFill(Color.GRAY);
+                //nextNode.setFill(Color.GRAY);
             }
 
-
             currentNode = nextNode;
-
-
         }
-    }}
+        return path;
+    }
+
+}
 
 
 
