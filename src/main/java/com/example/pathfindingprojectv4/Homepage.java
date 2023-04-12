@@ -70,7 +70,7 @@ public class Homepage implements Initializable {
     public Color getColor(String option){
         return switch (option) {
             case "Wall" -> Color.BLACK;
-            case "End" -> Color.RED;
+            case "End" -> Color.YELLOW;
             case "Start" -> Color.BLUE;
             //case "Blank" -> Color.WHITE;
             default -> null;
