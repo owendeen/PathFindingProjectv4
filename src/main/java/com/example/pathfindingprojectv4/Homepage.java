@@ -207,7 +207,7 @@ public class Homepage implements Initializable {
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
                 try {
                     nodeIteratorprevious.next().setFill(Color.GREY);
-                    nodeIterator.next().setFill(Color.GREEN); // iterator is rectangle
+                    nodeIterator.next().setFill(Color.LIGHTGREEN); // iterator is rectangle
 
                 }catch (NoSuchElementException e){}
 
