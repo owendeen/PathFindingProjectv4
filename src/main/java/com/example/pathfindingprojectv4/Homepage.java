@@ -196,6 +196,7 @@ public class Homepage implements Initializable {
     public void findPath(ActionEvent event) {
         String pathOption = optionPath.getValue();
         if(pathOption.equals("Random Walk")){
+            // 2 iterators one to mark the current rectangle and one to make the path gray
             ArrayList<Rectangle> path = performRandomWalk();
             Iterator<Rectangle> nodeIterator = path.iterator();
             nodeIterator.next();
