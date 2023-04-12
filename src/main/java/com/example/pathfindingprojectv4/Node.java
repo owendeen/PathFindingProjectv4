@@ -31,6 +31,8 @@ public class Node {
         return this.y;
     }
 
+    public void setH(double h){this.h = h;}
+
     public Rectangle getRectangle(){
         return rectangle;
     }

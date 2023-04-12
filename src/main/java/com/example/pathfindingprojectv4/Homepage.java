@@ -212,14 +212,14 @@ public class Homepage implements Initializable {
             ArrayList<Rectangle> path = performRandomWalk();
             Iterator<Rectangle> nodeIterator = path.iterator();
             nodeIterator.next();
-            nodeIterator.next().setFill(Color.GREEN);
+            nodeIterator.next().setFill(Color.LIGHTGREEN);
             nodeIterator.next();
             Iterator<Rectangle> nodeIteratorprevious =path.iterator();
             nodeIteratorprevious.next();
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
                 try {
                     nodeIteratorprevious.next().setFill(Color.GREY);
-                    nodeIterator.next().setFill(Color.PURPLE); // iterator is rectangle
+                    nodeIterator.next().setFill(Color.LIGHTGREEN); // iterator is rectangle
 
                 }catch (NoSuchElementException e){}
 
@@ -271,6 +271,27 @@ public class Homepage implements Initializable {
             currentNode = nextNode;
         }
         return path;
+    }
+
+    public ArrayList<Rectangle> performDijkstra() {
+        // find start and end nodes
+        Rectangle startRectangle = findStartNode();
+        Rectangle endRectangle = findEndNode();
+        Node[][] nodes = makeNodeArray();
+        for (int row = 0; row < 15; row++){
+            for (int col = 0; col < 15; col++){
+                if (nodes[row][col].getRectangle() != startRectangle){
+                    nodes[row][col].setH(Double.POSITIVE_INFINITY);
+                }
+            }
+        }
+
+        // create path
+        ArrayList<Rectangle> path = new ArrayList<>(); // path to go
+        path.add(startRectangle);
+
+
+        return null;
     }
 
 //    public void getCost(Rectangle currNode, Rectangle startNode, Rectangle endNode){
