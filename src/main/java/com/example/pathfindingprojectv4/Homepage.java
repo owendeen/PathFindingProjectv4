@@ -17,7 +17,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -32,6 +31,8 @@ public class Homepage implements Initializable {
 
     private double paneWidth;
     private double paneHeight;
+
+
 
     Rectangle[][] rectangles = new Rectangle[15][30]; // array is [row][col]
 
@@ -85,14 +86,8 @@ public class Homepage implements Initializable {
         drawRectangle(event);
     }
 
-
-
-
-
-
     @FXML
     private TextField gridSizeInput;
-
 
 
     private void drawRectangle(MouseEvent event) {
@@ -208,7 +203,7 @@ public class Homepage implements Initializable {
             Iterator<Rectangle> nodeIterator = path.iterator();
             nodeIterator.next();
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
-                nodeIterator.next().setFill(Color.GRAY); // iterator is recatangle
+                nodeIterator.next().setFill(Color.GRAY); // iterator is rectangle
 
             }));
             timeline.setCycleCount(path.size() - 1);
@@ -260,6 +255,36 @@ public class Homepage implements Initializable {
         return path;
     }
 
+//    public void getCost(Rectangle currNode, Rectangle startNode, Rectangle endNode){
+//
+//        //gcost --> distance froms start node
+//        int currNodeX = (int) currNode.getX() / 30;
+//        int currNodeY = (int) (currNode.getY() - 40) / 30;
+//
+//        int xDist = (int) Math.abs(currNodeX - startNode.getX());
+//        int yDist = (int) Math.abs(currNodeY - startNode.getY());
+//
+//        int gCost = xDist + yDist;
+//
+//        //hcost --> distance from end node
+//        xDist = (int)(Math.abs(currNodeX - endNode.getX()));
+//        yDist = (int)(Math.abs(currNodeY - endNode.getY()));
+//        int hCost = xDist + yDist;
+//
+//        //fcost --> total cost
+//        int fCost = gCost + hCost;}
+
+    public Node[][] makeNodeArray(){
+
+        Node[][] nodeList = new Node[15][30];
+
+        for( int row = 0; row < 15; row++){
+            for(int col =0; col < 30; col++ ){
+                nodeList[row][col] = new Node(rectangles[row][col], row, col, 0);
+            }
+        }
+        return nodeList;
+    }
 }
 
 

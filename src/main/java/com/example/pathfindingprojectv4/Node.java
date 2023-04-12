@@ -7,14 +7,21 @@ import javafx.scene.shape.Rectangle;
  */
 public class Node {
     private Rectangle rectangle;
+
+    public boolean visited = false;
     private double x;
     private double y;
-    public Node(Rectangle rectangle, int x, int y){
+
+    private double h;
+    public Node(Rectangle rectangle, int x, int y, int h){
         this.rectangle = rectangle;
         this.x = rectangle.getX();
         this.y = rectangle.getY();
+        this.h = h;
 
     }
+
+    public boolean isVisited(){return (visited);}
 
     public double getX() {
         return this.x;
@@ -22,6 +29,10 @@ public class Node {
 
     public double getY(){
         return this.y;
+    }
+
+    public Rectangle getRectangle(){
+        return rectangle;
     }
 
 
