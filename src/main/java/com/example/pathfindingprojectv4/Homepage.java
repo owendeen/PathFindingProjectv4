@@ -202,16 +202,14 @@ public class Homepage implements Initializable {
             nodeIterator.next();
             nodeIterator.next().setFill(Color.GREEN);
             nodeIterator.next();
-            Iterator<Rectangle> nodeIteratorprevious = path.iterator();
+            Iterator<Rectangle> nodeIteratorprevious =path.iterator();
             nodeIteratorprevious.next();
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
                 try {
-                    nodeIteratorprevious.next().setFill(Color.GRAY);
-                    nodeIterator.next().setFill(Color.GREEN);// iterator is rectangle
-                }
-                catch (NoSuchElementException e){
+                    nodeIteratorprevious.next().setFill(Color.GREY);
+                    nodeIterator.next().setFill(Color.GREEN); // iterator is rectangle
 
-                }
+                }catch (NoSuchElementException e){}
 
             }));
             timeline.setCycleCount(path.size() - 1);
