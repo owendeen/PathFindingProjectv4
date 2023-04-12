@@ -84,6 +84,11 @@ public class Homepage implements Initializable {
     }
 
     @FXML
+    void paneDragged(MouseEvent event) {
+        drawRectangle(event);
+    }
+
+    @FXML
     private TextField gridSizeInput;
 
 
@@ -140,6 +145,13 @@ public class Homepage implements Initializable {
                     @Override
                     public void handle(MouseEvent event) {
                         paneClicked(event);
+                    }
+                });
+
+                gamePane.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        paneDragged(event);
                     }
                 });
 
