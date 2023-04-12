@@ -2,10 +2,7 @@ package com.example.pathfindingprojectv4;
 
 //package com.example.setuptest;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 import javafx.animation.KeyFrame;
@@ -202,8 +199,18 @@ public class Homepage implements Initializable {
             ArrayList<Rectangle> path = performRandomWalk();
             Iterator<Rectangle> nodeIterator = path.iterator();
             nodeIterator.next();
+            nodeIterator.next().setFill(Color.GREEN);
+            nodeIterator.next();
+            Iterator<Rectangle> nodeIteratorprevious = path.iterator();
+            nodeIteratorprevious.next();
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
-                nodeIterator.next().setFill(Color.GRAY); // iterator is rectangle
+                try {
+                    nodeIteratorprevious.next().setFill(Color.GRAY);
+                    nodeIterator.next().setFill(Color.GREEN);// iterator is rectangle
+                }
+                catch (NoSuchElementException e){
+
+                }
 
             }));
             timeline.setCycleCount(path.size() - 1);
