@@ -402,9 +402,9 @@ public class Homepage implements Initializable {
 
     }
 
-    public double calcHeuristic(Rectangle current, Rectangle end){
-        return Math.sqrt(Math.pow((end.getX()/30) - (current.getX()/30), 2 ) + Math.pow(((end.getX()-40)/30) - ((current.getX()-40)/30), 2 ));
-    }
+//    public double calcHeuristic(Rectangle current, Rectangle end){
+//        return Math.sqrt(Math.pow((end.getX()/30) - (current.getX()/30), 2 ) + Math.pow(((end.getX()-40)/30) - ((current.getX()-40)/30), 2 ));
+//    }
 
     public ArrayList<Node> Neighbors(Node current, ArrayList<Node> nodeList) {
         ArrayList<Node> neighbors = new ArrayList<>();
@@ -418,9 +418,143 @@ public class Homepage implements Initializable {
         return null;
     }
 
-}
+
 
 //=========================================================================================
+    /**
+     * Implements pseudocode from this Wikipedia page - <a href="https://en.wikipedia.org/wiki/A">...</a>*_search_algorithm
+     * A* is a very famous algorithm. The goal is to min( F(n) = G(n) + H(n) ), where H estimates the cheapest path
+     * from n to goal, and G is the cost of the path from the start to n.
+     */
+    public ArrayList<Rectangle> performAStar() {
+
+        // get start an end nodes
+        Rectangle startNode = findStartNode();
+        Rectangle endNode = findEndNode();
+
+        // nodes not discovered and not visited
+        PriorityQueue<AStarNode> openSet = new PriorityQueue<>(); // Queue such that min F is first
+
+        // nodes already visited
+        HashSet<Rectangle> closedSet = new HashSet<>(); // elements are keys, values irrelevant
+
+        // path from start to current node
+        HashMap<Rectangle, Rectangle> cameFrom = new HashMap<>(); // includes parent nodes
+
+        // start ->  current
+        HashMap<Rectangle, Integer> gScore = new HashMap<>();
+
+        // argmin (F = G + H)
+        HashMap<Rectangle, Integer> fScore = new HashMap<>();
+
+
+        gScore.put(startNode, 0); // (key, value)
+        fScore.put(startNode, calcHeuristic(startNode, endNode));
+
+        openSet.add(new AStarNode(startNode, fScore.get(startNode)));
+
+
+        while (!openSet.isEmpty()) {
+
+            AStarNode current = openSet.poll(); // retrieves head of queue and pops it
+
+            Rectangle currentNode = current.getNode();
+
+            if (currentNode.equals(endNode)) {
+                ArrayList<Rectangle> path = new ArrayList<>();
+                path.add(endNode);
+                Rectangle node = endNode;
+                while (!node.equals(startNode)) {
+                    node = cameFrom.get(node);
+                    path.add(node);
+                }
+                Collections.reverse(path);
+                return path;
+            }
+            closedSet.add(currentNode);
+            ArrayList<Rectangle> neighbors = new ArrayList<>();
+            int currentRow = (int) (currentNode.getY() - 40) / 30;
+            int currentCol = (int) currentNode.getX() / 30;
+            if ((currentRow > 0) && !isWall(rectangles[currentRow - 1][currentCol])) {
+                neighbors.add(rectangles[currentRow - 1][currentCol]); // up
+            }
+            if ((currentRow < 14) && !isWall(rectangles[currentRow + 1][currentCol])) {
+                neighbors.add(rectangles[currentRow + 1][currentCol]); // down
+            }
+            if ((currentCol > 0) && !isWall(rectangles[currentRow][currentCol - 1])) {
+                neighbors.add(rectangles[currentRow][currentCol - 1]); // left
+            }
+            if ((currentCol < 29) && !isWall(rectangles[currentRow][currentCol + 1])) {
+                neighbors.add(rectangles[currentRow][currentCol + 1]); // right
+            }
+
+            for (Rectangle neighbor : neighbors) {
+                if (closedSet.contains(neighbor)) {
+                    continue;
+                }
+                int tentativeGScore = gScore.get(currentNode) + 1;
+                if (!openSet.contains(new AStarNode(neighbor, 0)) || tentativeGScore < gScore.get(neighbor)) {
+                    cameFrom.put(neighbor, currentNode);
+                    gScore.put(neighbor, tentativeGScore);
+                    fScore.put(neighbor, tentativeGScore + calcHeuristic(neighbor, endNode));
+                    if (!openSet.contains(new AStarNode(neighbor, 0))) {
+                        openSet.add(new AStarNode(neighbor, fScore.get(neighbor)));
+                    }
+                }
+            }
+        }
+
+        return new ArrayList<>();
+    }
+
+class AStarNode implements Comparable<AStarNode> {
+    private final Rectangle node;
+    private final int fScore;
+
+    public AStarNode(Rectangle node, int fScore) {
+        this.node = node;
+        this.fScore = fScore;
+    }
+
+
+
+    public Rectangle getNode() {
+        return node;
+    }
+
+    public int getFScore() {
+        return fScore;
+    }
+
+    @Override
+    public int compareTo(AStarNode other) {
+        return Integer.compare(this.fScore, other.getFScore());
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof AStarNode)) {
+            return false;
+        }
+        AStarNode otherNode = (AStarNode) other;
+        return this.node.equals(otherNode.getNode());
+    }
+
+    @Override
+    public int hashCode() {
+        return node.hashCode();
+    }
+}
+
+    private int calcHeuristic(Rectangle node, Rectangle goal) {
+        // L1 Norm
+        int xDiff = Math.abs((int) node.getX() / 30 - (int) goal.getX() / 30);
+        int yDiff = Math.abs(((int) node.getY() - 40) / 30 - ((int) goal.getY() - 40) / 30);
+        return xDiff + yDiff;
+    }
+
+}
+
 
 
 
