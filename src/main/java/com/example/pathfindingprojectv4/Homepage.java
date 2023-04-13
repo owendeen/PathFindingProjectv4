@@ -6,6 +6,8 @@ import java.util.*;
 
 
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 import javafx.event.EventHandler;
 
@@ -41,8 +44,7 @@ public class Homepage implements Initializable {
     @FXML
     private ComboBox<String> optionSelect;
 
-    @FXML
-    ComboBox<String> optionPath;
+    @FXML ComboBox<String> optionPath;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -69,7 +71,7 @@ public class Homepage implements Initializable {
 
     }
 
-    public Color getColor(String option) {
+    public Color getColor(String option){
         return switch (option) {
             case "Wall" -> Color.BLACK;
             case "End" -> Color.RED;
@@ -99,7 +101,7 @@ public class Homepage implements Initializable {
         double mouseX = event.getX();
         double mouseY = event.getY();
         int x = (int) mouseX / 30; // num of col
-        int y = (int) (mouseY - 40) / 30; // num of row
+        int y = (int) (mouseY-40) / 30; // num of row
 
         Rectangle rectangle = rectangles[y][x];
         rectangle.setFill(color);
@@ -125,6 +127,7 @@ public class Homepage implements Initializable {
                 rectangle.setY(row);
 
 
+
                 rectangles[indcROW][indcCOL] = rectangle;
 
 
@@ -135,8 +138,9 @@ public class Homepage implements Initializable {
                 */
 
 
+
                 rectangle.setStroke(Color.BLACK);
-                rectangle.setFill(Color.color(0.9, 0.9, 0.9)); // better light gray
+                rectangle.setFill(Color.color(0.9,0.9,0.9)); // better light gray
                 gamePane.getChildren().add(rectangle);
 
                 gamePane.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -172,10 +176,10 @@ public class Homepage implements Initializable {
     }
 
     public Rectangle findStartNode() {
-        for (int row = 0; row < 15; row++) {
-            for (int col = 0; col < 30; col++) {
+        for(int row = 0; row < 15;  row++){
+            for(int col = 0; col < 30; col++){
                 Rectangle value = rectangles[row][col];
-                if (value.getFill().equals(Color.BLUE)) {
+                if(value.getFill().equals(Color.BLUE)){
                     return value;
                 }
             }
@@ -194,45 +198,37 @@ public class Homepage implements Initializable {
         }
         return null;
     }
-
     private boolean isWall(Rectangle cell) {
         return cell.getFill().equals(Color.BLACK);
     }
-
     @FXML
     public void findPath(ActionEvent event) {
         String pathOption = optionPath.getValue();
-        if (pathOption.equals("Random Walk")) {
+        if(pathOption.equals("Random Walk")){
             // 2 iterators one to mark the current rectangle and one to make the path gray
             ArrayList<Rectangle> path = performRandomWalk();
-            Animation(path, Color.PURPLE);
-        }
-        else if (pathOption.equals("A Star")){
-            ArrayList<Rectangle> path = performAStar();
-            Animation(path, Color.LIGHTGREEN);
+            Iterator<Rectangle> nodeIterator = path.iterator();
+            nodeIterator.next();
+            nodeIterator.next().setFill(Color.LIGHTGREEN);
+            nodeIterator.next();
+            Iterator<Rectangle> nodeIteratorprevious =path.iterator();
+            nodeIteratorprevious.next();
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
+                try {
+                    nodeIteratorprevious.next().setFill(Color.GREY);
+                    nodeIterator.next().setFill(Color.LIGHTGREEN); // iterator is rectangle
+
+                }catch (NoSuchElementException e){}
+
+            }));
+            timeline.setCycleCount(path.size() - 1);
+            timeline.playFromStart();
+
+            //timeline.setOnFinished(e -> findPathTraversal());
+
+
         }
     }
-
-    public void Animation(ArrayList<Rectangle> path, Color color){
-        Iterator<Rectangle> nodeIterator = path.iterator();
-        nodeIterator.next();
-        nodeIterator.next().setFill(color);
-        nodeIterator.next();
-        Iterator<Rectangle> nodeIteratorprevious = path.iterator();
-        nodeIteratorprevious.next();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
-            try {
-                nodeIteratorprevious.next().setFill(Color.GREY);
-                nodeIterator.next().setFill(color); // iterator is rectangle
-
-            } catch (NoSuchElementException e) {
-            }
-
-        }));
-        timeline.setCycleCount(path.size() - 1);
-        timeline.playFromStart();
-    }
-
 
     public ArrayList<Rectangle> performRandomWalk() {
         // find start and end nodes
@@ -248,17 +244,17 @@ public class Homepage implements Initializable {
             ArrayList<Rectangle> neighbors = new ArrayList<>();
             int currentRow = (int) (currentNode.getY() - 40) / 30;
             int currentCol = (int) currentNode.getX() / 30;
-            if ((currentRow > 0) && !isWall(rectangles[currentRow - 1][currentCol])) {
-                neighbors.add(rectangles[currentRow - 1][currentCol]); // up
+            if ((currentRow > 0) && !isWall(rectangles[currentRow-1][currentCol])) {
+                neighbors.add(rectangles[currentRow-1][currentCol]); // up
             }
-            if ((currentRow < 14) && !isWall(rectangles[currentRow + 1][currentCol])) {
-                neighbors.add(rectangles[currentRow + 1][currentCol]); // down
+            if ((currentRow < 14) && !isWall(rectangles[currentRow+1][currentCol])) {
+                neighbors.add(rectangles[currentRow+1][currentCol]); // down
             }
-            if ((currentCol > 0) && !isWall(rectangles[currentRow][currentCol - 1])) {
-                neighbors.add(rectangles[currentRow][currentCol - 1]); // left
+            if ((currentCol > 0) && !isWall(rectangles[currentRow][currentCol-1])) {
+                neighbors.add(rectangles[currentRow][currentCol-1]); // left
             }
-            if ((currentCol < 29) && !isWall(rectangles[currentRow][currentCol + 1])) {
-                neighbors.add(rectangles[currentRow][currentCol + 1]); // right
+            if ((currentCol < 29) && !isWall(rectangles[currentRow][currentCol+1])) {
+                neighbors.add(rectangles[currentRow][currentCol+1]); // right
             }
 
             // choose a random neighbor and add it to path
@@ -279,35 +275,106 @@ public class Homepage implements Initializable {
         Rectangle startRectangle = findStartNode();
         Rectangle endRectangle = findEndNode();
         Node[][] nodes = makeNodeArray();
-        for (int row = 0; row < 15; row++) {
-            for (int col = 0; col < 15; col++) {
-                if (nodes[row][col].getRectangle() != startRectangle) {
-                    nodes[row][col].setH(Double.POSITIVE_INFINITY);
+        Node startnode = null;
+        for (int row = 0; row < 15; row++){
+            for (int col = 0; col < 15; col++){
+                if (nodes[row][col].getRectangle() != startRectangle){
+                    if (nodes[row][col].getRectangle().getFill() != Color.BLACK) {
+                        nodes[row][col].setH(Double.POSITIVE_INFINITY);
+                    }
+                    else{
+                        nodes[row][col].setH(Double.NEGATIVE_INFINITY);
+                    }
+                }
+                else{
+                    startnode = nodes[row][col];
                 }
             }
         }
+        Node[] nodepath = new Node[0];
+        if(startnode != null) {
+            nodepath = dijkstrahelper(startnode, nodepath, nodes);
+        }
+
 
         // create path
         ArrayList<Rectangle> path = new ArrayList<>(); // path to go
         path.add(startRectangle);
+        for(int item = 1; item < nodepath.length; item++){
+            path.add(nodepath[item].getRectangle());
+        }
 
-
-        return null;
+        return path;
     }
 
-    public Node[][] makeNodeArray() {
+    public Node[] dijkstrahelper(Node node, Node[] nodePath, Node[][] nodes){
+        if (node.getFill() != Color.RED || (node.getFill() == Color.RED && node.parentnode == null)) {
+            double minH = Double.POSITIVE_INFINITY;
+            if (node.getH() == Double.POSITIVE_INFINITY) {
+                for (double row = node.getY() - 1; row <= node.getY() + 1; row++) {
+                    for (double col = node.getY() - 1; col <= node.getY() + 1; col++) {
+                        if (row >= 0 && row < 15 && col >= 0 && col < 30) {
+                            Node currentnode = nodes[(int) row][(int) col];
+                            if (currentnode != node && currentnode.getH() != Double.POSITIVE_INFINITY && currentnode.getH() >= 0) {
+                                if (row == node.getY() || col == node.getY()) {
+                                    if (currentnode.getH() + 10 <= minH) {
+                                        minH = currentnode.getH() + 10;
+                                        node.parentnode = currentnode;
+                                    }
+                                } else {
+                                    if (currentnode.getH() + 14 < minH) {
+                                        minH = currentnode.getH() + 10;
+                                        node.parentnode = currentnode;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                node.setH(minH);
+                nodes[(int)node.getY()][(int)node.getX()] = node;
+                Node[] temp = new Node[nodePath.length + 1];
+                for (int item = 0; item < nodePath.length; item++) {
+                    temp[item] = nodePath[item];
+                }
+                temp[nodePath.length] = node;
+                nodePath = temp;
+
+            }
+
+            double minh = Double.POSITIVE_INFINITY;
+            for (int row = 0; row < 15; row++) {
+                for (int col = 0; col < 30; col++) {
+                    if (nodes[row][col].getH() < minh && nodes[row][col].parentnode == null) {
+                        minh = nodes[row][col].getH();
+                    }
+                }
+            }
+            for (int row = 0; row < 15; row++) {
+                for (int col = 0; col < 30; col++) {
+                    if (nodes[row][col].getH() == minh && nodes[row][col].parentnode == null) {
+                        return dijkstrahelper(nodes[row][col], nodePath, nodes);
+                    }
+                }
+            }
+
+        }
+        return nodePath;
+    }
+
+    public Node[][] makeNodeArray(){
 
         Node[][] nodeList = new Node[15][30];
 
-        for (int row = 0; row < 15; row++) {
-            for (int col = 0; col < 30; col++) {
+        for( int row = 0; row < 15; row++){
+            for(int col =0; col < 30; col++ ){
                 nodeList[row][col] = new Node(rectangles[row][col], row, col, 0);
             }
         }
         return nodeList;
     }
 
-    //============================================================================================
+//============================================================================================
     public void makeNodes() {
         Rectangle[][] list = rectangles;
         for (int row = 0; row < 15; row++) {
@@ -330,11 +397,14 @@ public class Homepage implements Initializable {
         }
     }
 
-    public void performGreedyBest() {
+    public void performGreedyBest(){
 
 
     }
 
+    public double calcHeuristic(Rectangle current, Rectangle end){
+        return Math.sqrt(Math.pow((end.getX()/30) - (current.getX()/30), 2 ) + Math.pow(((end.getX()-40)/30) - ((current.getX()-40)/30), 2 ));
+    }
 
     public ArrayList<Node> Neighbors(Node current, ArrayList<Node> nodeList) {
         ArrayList<Node> neighbors = new ArrayList<>();
@@ -348,143 +418,11 @@ public class Homepage implements Initializable {
         return null;
     }
 
+}
 
 //=========================================================================================
 
-    /**
-     * Implements pseudocode from this Wikipedia page - <a href="https://en.wikipedia.org/wiki/A">...</a>*_search_algorithm
-     * A* is a very famous algorithm. The goal is to min( F(n) = G(n) + H(n) ), where H estimates the cheapest path
-     * from n to goal, and G is the cost of the path from the start to n.
-     */
-    public ArrayList<Rectangle> performAStar() {
 
-        // get start an end nodes
-        Rectangle startNode = findStartNode();
-        Rectangle endNode = findEndNode();
-
-        // nodes not discovered and not visited
-        PriorityQueue<AStarNode> openSet = new PriorityQueue<>(); // Queue such that min F is first
-
-        // nodes already visited
-        HashSet<Rectangle> closedSet = new HashSet<>(); // elements are keys, values irrelevant
-
-        // path from start to current node
-        HashMap<Rectangle, Rectangle> cameFrom = new HashMap<>(); // includes parent nodes
-
-        // start ->  current
-        HashMap<Rectangle, Integer> gScore = new HashMap<>();
-
-        // argmin (F = G + H)
-        HashMap<Rectangle, Integer> fScore = new HashMap<>();
-
-
-        gScore.put(startNode, 0); // (key, value)
-        fScore.put(startNode, calcHeuristic(startNode, endNode));
-
-        openSet.add(new AStarNode(startNode, fScore.get(startNode)));
-
-
-        while (!openSet.isEmpty()) {
-
-            AStarNode current = openSet.poll(); // retrieves head of queue and pops it
-
-            Rectangle currentNode = current.getNode();
-
-            if (currentNode.equals(endNode)) {
-                ArrayList<Rectangle> path = new ArrayList<>();
-                path.add(endNode);
-                Rectangle node = endNode;
-                while (!node.equals(startNode)) {
-                    node = cameFrom.get(node);
-                    path.add(node);
-                }
-                Collections.reverse(path);
-                return path;
-            }
-            closedSet.add(currentNode);
-            ArrayList<Rectangle> neighbors = new ArrayList<>();
-            int currentRow = (int) (currentNode.getY() - 40) / 30;
-            int currentCol = (int) currentNode.getX() / 30;
-            if ((currentRow > 0) && !isWall(rectangles[currentRow - 1][currentCol])) {
-                neighbors.add(rectangles[currentRow - 1][currentCol]); // up
-            }
-            if ((currentRow < 14) && !isWall(rectangles[currentRow + 1][currentCol])) {
-                neighbors.add(rectangles[currentRow + 1][currentCol]); // down
-            }
-            if ((currentCol > 0) && !isWall(rectangles[currentRow][currentCol - 1])) {
-                neighbors.add(rectangles[currentRow][currentCol - 1]); // left
-            }
-            if ((currentCol < 29) && !isWall(rectangles[currentRow][currentCol + 1])) {
-                neighbors.add(rectangles[currentRow][currentCol + 1]); // right
-            }
-
-            for (Rectangle neighbor : neighbors) {
-                if (closedSet.contains(neighbor)) {
-                    continue;
-                }
-                int tentativeGScore = gScore.get(currentNode) + 1;
-                if (!openSet.contains(new AStarNode(neighbor, 0)) || tentativeGScore < gScore.get(neighbor)) {
-                    cameFrom.put(neighbor, currentNode);
-                    gScore.put(neighbor, tentativeGScore);
-                    fScore.put(neighbor, tentativeGScore + calcHeuristic(neighbor, endNode));
-                    if (!openSet.contains(new AStarNode(neighbor, 0))) {
-                        openSet.add(new AStarNode(neighbor, fScore.get(neighbor)));
-                    }
-                }
-            }
-        }
-
-        return new ArrayList<>();
-    }
-
-    class AStarNode implements Comparable<AStarNode> {
-        private final Rectangle node;
-        private final int fScore;
-
-        public AStarNode(Rectangle node, int fScore) {
-            this.node = node;
-            this.fScore = fScore;
-        }
-
-
-
-        public Rectangle getNode() {
-            return node;
-        }
-
-        public int getFScore() {
-            return fScore;
-        }
-
-        @Override
-        public int compareTo(AStarNode other) {
-            return Integer.compare(this.fScore, other.getFScore());
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (!(other instanceof AStarNode)) {
-                return false;
-            }
-            AStarNode otherNode = (AStarNode) other;
-            return this.node.equals(otherNode.getNode());
-        }
-
-        @Override
-        public int hashCode() {
-            return node.hashCode();
-        }
-    }
-
-    private int calcHeuristic(Rectangle node, Rectangle goal) {
-        // L1 Norm
-        int xDiff = Math.abs((int) node.getX() / 30 - (int) goal.getX() / 30);
-        int yDiff = Math.abs(((int) node.getY() - 40) / 30 - ((int) goal.getY() - 40) / 30);
-        return xDiff + yDiff;
-        // push comment
-    }
-
-}
 
 
 
