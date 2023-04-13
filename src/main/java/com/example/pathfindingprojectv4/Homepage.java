@@ -335,14 +335,16 @@ public class Homepage implements Initializable {
         return Math.sqrt(Math.pow((end.getX()/30) - (current.getX()/30), 2 ) + Math.pow(((end.getX()-40)/30) - ((current.getX()-40)/30), 2 ));
     }
 
-    public ArrayList<Node> Neighbors(Node current, ArrayList<Node> nodeList){
-       ArrayList<Node> neighbors = new ArrayList<>();
+    public ArrayList<Node> Neighbors(Node current, ArrayList<Node> nodeList) {
+        ArrayList<Node> neighbors = new ArrayList<>();
 
-       for(Node node: nodeList){
-           if(node.isVisited()){
-               continue;
-           }
+        for (Node node : nodeList) {
+            if (node.isVisited()) {
+                continue;
+            }
 
+        }
+        return null;
     }
 
 }
