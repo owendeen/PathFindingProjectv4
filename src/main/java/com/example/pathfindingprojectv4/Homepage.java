@@ -275,20 +275,60 @@ public class Homepage implements Initializable {
         Rectangle startRectangle = findStartNode();
         Rectangle endRectangle = findEndNode();
         Node[][] nodes = makeNodeArray();
+        Node startnode = null;
         for (int row = 0; row < 15; row++){
             for (int col = 0; col < 15; col++){
                 if (nodes[row][col].getRectangle() != startRectangle){
-                    nodes[row][col].setH(Double.POSITIVE_INFINITY);
+                    if (nodes[row][col].getRectangle().getFill() != Color.BLACK) {
+                        nodes[row][col].setH(Double.POSITIVE_INFINITY);
+                    }
+                    else{
+                        nodes[row][col].setH(Double.NEGATIVE_INFINITY);
+                    }
+                }
+                else{
+                    startnode = nodes[row][col];
                 }
             }
         }
+        Node[] nodepath = new Node[0];
+        nodepath = dijkstrahelper(startnode, nodepath, nodes);
 
         // create path
         ArrayList<Rectangle> path = new ArrayList<>(); // path to go
         path.add(startRectangle);
 
 
-        return null;
+        return path;
+    }
+
+    public Node[] dijkstrahelper(Node node, Node[] nodePath, Node[][] nodes){
+        double minH = Double.POSITIVE_INFINITY;
+        if(node.getH() == Double.POSITIVE_INFINITY) {
+            for (double row = node.getY() - 1; row <= node.getY() + 1; row++) {
+                for (double col = node.getY() - 1; col <= node.getY() + 1; col++) {
+                    if (row >= 0 && row < 15 && col >= 0 && col < 30) {
+                        Node currentnode = nodes[(int) row][(int) col];
+                        if (currentnode != node && currentnode.getH() != Double.POSITIVE_INFINITY && currentnode.getH() >= 0) {
+                            if (row == node.getY() || col == node.getY()) {
+                                if (currentnode.getH() + 10 <= minH) {
+                                    minH = currentnode.getH() + 10;
+                                    node.parentnode = currentnode;
+                                }
+                            } else {
+                                if (currentnode.getH() + 14 < minH) {
+                                    minH = currentnode.getH() + 10;
+                                    node.parentnode = currentnode;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            node.setH(minH);
+        }
+
+        return nodePath;
     }
 
     public Node[][] makeNodeArray(){

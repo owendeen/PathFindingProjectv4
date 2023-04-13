@@ -12,6 +12,7 @@ public class Node {
     public boolean visited = false;
     private double x;
     private double y;
+    public Node parentnode = null;
 
     private int gCost;
     private int hCost;
@@ -37,17 +38,12 @@ public class Node {
     }
 
     public void setH(double h){this.h = h;}
+    public double getH(){return this.h;}
 
     public Rectangle getRectangle(){
         return rectangle;
     }
 
-
-
-    @Override
-    public String toString(){
-        return String.format("%d%d%n", x, y);
-    }
 
     public Paint getFill() {
         return rectangle.getFill();
