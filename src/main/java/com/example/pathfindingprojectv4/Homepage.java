@@ -5,10 +5,7 @@ import java.net.URL;
 import java.util.*;
 
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.PauseTransition;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,6 +20,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import javafx.event.EventHandler;
+import java.util.Timer;
 
 public class Homepage implements Initializable {
 
@@ -94,6 +92,9 @@ public class Homepage implements Initializable {
 
     @FXML
     private TextField gridSizeInput;
+
+    @FXML
+    private TextField timer;
 
 
     private void drawRectangle(MouseEvent event) {
@@ -172,7 +173,15 @@ public class Homepage implements Initializable {
     void clearWindow(ActionEvent event) {
 
         makeGrid(); // Clear button now works -zack g
+        timer.setText("0.0s");
 
+    }
+
+    public static class startTime{
+        private final long time;
+        public startTime(long time){
+            this.time = time;
+        }
     }
 
     public Rectangle findStartNode() {
@@ -203,6 +212,7 @@ public class Homepage implements Initializable {
     }
     @FXML
     public void findPath(ActionEvent event) {
+
         String pathOption = optionPath.getValue();
         if(pathOption.equals("Random Walk")){
             // 2 iterators one to mark the current rectangle and one to make the path gray
@@ -219,6 +229,9 @@ public class Homepage implements Initializable {
 
 
     public void Animation(ArrayList<Rectangle> path, Color color){
+
+        startTime st = new startTime(System.currentTimeMillis());
+
         Iterator<Rectangle> nodeIterator = path.iterator();
         nodeIterator.next();
         nodeIterator.next().setFill(color);
@@ -229,6 +242,10 @@ public class Homepage implements Initializable {
             try {
                 nodeIteratorprevious.next().setFill(Color.GREY);
                 nodeIterator.next().setFill(color); // iterator is rectangle
+
+                double elapsedTime = System.currentTimeMillis() - st.time;
+                double elapsedSeconds = elapsedTime / 1000;
+                timer.setText(String.valueOf(elapsedSeconds) + "s");
 
             }catch (NoSuchElementException e){}
 
