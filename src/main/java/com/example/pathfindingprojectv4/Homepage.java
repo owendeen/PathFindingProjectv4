@@ -215,10 +215,6 @@ public class Homepage implements Initializable {
             ArrayList<Rectangle> path = performAStar();
             Animation(path, Color.LIGHTGREEN);
         }
-        else if (pathOption.equals("Dijkstra")){
-            ArrayList<Rectangle> path = performDijkstra();
-            Animation(path, Color.CORAL);
-        }
     }
 
 
@@ -426,7 +422,30 @@ public class Homepage implements Initializable {
 
             }
         }
+        if(pathOption.equals("Dijkstra")){
+            // 2 iterators one to mark the current rectangle and one to make the path gray
+            ArrayList<Rectangle> path = performDijkstra();
+            Iterator<Rectangle> nodeIterator = path.iterator();
+            nodeIterator.next();
+            nodeIterator.next().setFill(Color.PURPLE);
+            nodeIterator.next();
+            Iterator<Rectangle> nodeIteratorprevious =path.iterator();
+            nodeIteratorprevious.next();
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
+                try {
+                    nodeIteratorprevious.next().setFill(Color.GREY);
+                    nodeIterator.next().setFill(Color.PURPLE); // iterator is rectangle
 
+                }catch (NoSuchElementException e){}
+
+            }));
+            timeline.setCycleCount(path.size() - 1);
+            timeline.playFromStart();
+
+            //timeline.setOnFinished(e -> findPathTraversal());
+
+
+        }
 
     }
 
