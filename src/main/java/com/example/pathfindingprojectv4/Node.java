@@ -9,8 +9,9 @@ import javafx.scene.shape.Rectangle;
 public class Node {
     private Rectangle rectangle;
 
-    public boolean visited = false;
     public boolean solved = false;
+    public boolean visited = false;
+
     private double x;
     private double y;
     public Node parentnode = null;
