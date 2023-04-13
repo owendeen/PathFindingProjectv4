@@ -29,7 +29,11 @@ public class Homepage implements Initializable {
     private double paneWidth;
     private double paneHeight;
 
+    Node start;
+    Node end;
 
+    ArrayList<Node> nodes = new ArrayList<>();
+    ArrayList<Node> pathTaken = new ArrayList<>();
 
     Rectangle[][] rectangles = new Rectangle[15][30]; // array is [row][col]
 
@@ -102,8 +106,6 @@ public class Homepage implements Initializable {
         Rectangle rectangle = rectangles[y][x];
         rectangle.setFill(color);
 
-
-
     }
 
     private void makeGrid() {
@@ -173,9 +175,6 @@ public class Homepage implements Initializable {
 
     }
 
-
-
-
     public Rectangle findStartNode() {
         for(int row = 0; row < 15;  row++){
             for(int col = 0; col < 30; col++){
@@ -199,11 +198,9 @@ public class Homepage implements Initializable {
         }
         return null;
     }
-
     private boolean isWall(Rectangle cell) {
         return cell.getFill().equals(Color.BLACK);
     }
-
     @FXML
     public void findPath(ActionEvent event) {
         String pathOption = optionPath.getValue();
@@ -294,25 +291,6 @@ public class Homepage implements Initializable {
         return null;
     }
 
-//    public void getCost(Rectangle currNode, Rectangle startNode, Rectangle endNode){
-//
-//        //gcost --> distance froms start node
-//        int currNodeX = (int) currNode.getX() / 30;
-//        int currNodeY = (int) (currNode.getY() - 40) / 30;
-//
-//        int xDist = (int) Math.abs(currNodeX - startNode.getX());
-//        int yDist = (int) Math.abs(currNodeY - startNode.getY());
-//
-//        int gCost = xDist + yDist;
-//
-//        //hcost --> distance from end node
-//        xDist = (int)(Math.abs(currNodeX - endNode.getX()));
-//        yDist = (int)(Math.abs(currNodeY - endNode.getY()));
-//        int hCost = xDist + yDist;
-//
-//        //fcost --> total cost
-//        int fCost = gCost + hCost;}
-
     public Node[][] makeNodeArray(){
 
         Node[][] nodeList = new Node[15][30];
@@ -324,9 +302,52 @@ public class Homepage implements Initializable {
         }
         return nodeList;
     }
+
+//============================================================================================
+    public void makeNodes() {
+        Rectangle[][] list = rectangles;
+        for (int row = 0; row < 15; row++) {
+            for (int col = 0; col < 30; col++) {
+                Node node = null;
+                if (rectangles[row][col].getFill().equals(Color.BLACK)) {
+                    node = new Node(rectangles[row][col], col, row, -1);
+                } else if (rectangles[row][col].getFill().equals(Color.BLUE)) {
+                    node = new Node(rectangles[row][col], col, row, calcHeuristic(rectangles[row][col], end.getRectangle()));
+                    start = node;
+                } else if (rectangles[row][col].getFill().equals(Color.RED)) {
+                    node = new Node(rectangles[row][col], col, row, 0);
+                    end = node;
+                } else if (!rectangles[row][col].getFill().equals(Color.BLACK) || !rectangles[row][col].getFill().equals(Color.RED) || !rectangles[row][col].getFill().equals(Color.BLUE)) {
+                    node = new Node(rectangles[row][col], col, row, calcHeuristic(rectangles[row][col], end.getRectangle()));
+                }
+                nodes.add(node);
+
+            }
+        }
+    }
+
+    public void performGreedyBest(){
+
+
+    }
+
+    public double calcHeuristic(Rectangle current, Rectangle end){
+        return Math.sqrt(Math.pow((end.getX()/30) - (current.getX()/30), 2 ) + Math.pow(((end.getX()-40)/30) - ((current.getX()-40)/30), 2 ));
+    }
+
+    public ArrayList<Node> Neighbors(Node current, ArrayList<Node> nodeList){
+       ArrayList<Node> neighbors = new ArrayList<>();
+
+       for(Node node: nodeList){
+           if(node.isVisited()){
+               continue;
+           }
+
+    }
+
 }
 
-
+//=========================================================================================
 
 
 

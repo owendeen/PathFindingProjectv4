@@ -1,5 +1,6 @@
 package com.example.pathfindingprojectv4;
 
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -12,16 +13,20 @@ public class Node {
     private double x;
     private double y;
 
+    private int gCost;
+    private int hCost;
+    private int fCost;
+
     private double h;
-    public Node(Rectangle rectangle, int x, int y, int h){
+    public Node(Rectangle rectangle, int x, int y, double h){
         this.rectangle = rectangle;
-        this.x = rectangle.getX();
-        this.y = rectangle.getY();
-        this.h = h;
+        this.x = rectangle.getX() / 30;
+        this.y = (rectangle.getY() - 40)/ 30;
 
     }
 
     public boolean isVisited(){return (visited);}
+
 
     public double getX() {
         return this.x;
@@ -42,6 +47,10 @@ public class Node {
     @Override
     public String toString(){
         return String.format("%d%d%n", x, y);
+    }
+
+    public Paint getFill() {
+        return rectangle.getFill();
     }
 }
 
