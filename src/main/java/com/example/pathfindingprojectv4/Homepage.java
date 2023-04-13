@@ -481,6 +481,7 @@ public class Homepage implements Initializable {
         int xDiff = Math.abs((int) node.getX() / 30 - (int) goal.getX() / 30);
         int yDiff = Math.abs(((int) node.getY() - 40) / 30 - ((int) goal.getY() - 40) / 30);
         return xDiff + yDiff;
+        // push comment
     }
 
 }
