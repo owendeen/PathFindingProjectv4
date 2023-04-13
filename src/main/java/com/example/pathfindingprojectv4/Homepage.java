@@ -207,27 +207,34 @@ public class Homepage implements Initializable {
         if(pathOption.equals("Random Walk")){
             // 2 iterators one to mark the current rectangle and one to make the path gray
             ArrayList<Rectangle> path = performRandomWalk();
-            Iterator<Rectangle> nodeIterator = path.iterator();
-            nodeIterator.next();
-            nodeIterator.next().setFill(Color.LIGHTGREEN);
-            nodeIterator.next();
-            Iterator<Rectangle> nodeIteratorprevious =path.iterator();
-            nodeIteratorprevious.next();
-            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
-                try {
-                    nodeIteratorprevious.next().setFill(Color.GREY);
-                    nodeIterator.next().setFill(Color.LIGHTGREEN); // iterator is rectangle
-
-                }catch (NoSuchElementException e){}
-
-            }));
-            timeline.setCycleCount(path.size() - 1);
-            timeline.playFromStart();
+            Animation(path, Color.PURPLE);
 
             //timeline.setOnFinished(e -> findPathTraversal());
-
-
         }
+        else if (pathOption.equals("A Star")){
+            ArrayList<Rectangle> path = performAStar();
+            Animation(path, Color.LIGHTGREEN);
+        }
+    }
+
+
+    public void Animation(ArrayList<Rectangle> path, Color color){
+        Iterator<Rectangle> nodeIterator = path.iterator();
+        nodeIterator.next();
+        nodeIterator.next().setFill(color);
+        nodeIterator.next();
+        Iterator<Rectangle> nodeIteratorprevious =path.iterator();
+        nodeIteratorprevious.next();
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
+            try {
+                nodeIteratorprevious.next().setFill(Color.GREY);
+                nodeIterator.next().setFill(color); // iterator is rectangle
+
+            }catch (NoSuchElementException e){}
+
+        }));
+        timeline.setCycleCount(path.size() - 1);
+        timeline.playFromStart();
     }
 
     public ArrayList<Rectangle> performRandomWalk() {
