@@ -59,7 +59,7 @@ public class Homepage implements Initializable {
                 "Random Walk",
                 "A Star",
                 "Dijkstra",
-                "DijkstraDiagonal"
+                "Trivial Path (Diagonals)"
         );
 
         optionSelect.setItems(options);
@@ -245,9 +245,9 @@ public class Homepage implements Initializable {
 //                item.setFill(Color.DEEPSKYBLUE);
 //            }
         }
-        else if (pathOption.equals("DijkstraDiagonal")) {
-            ArrayList<Rectangle> path = performDijkstraDiagonals();
-            Animation(path, Color.DEEPSKYBLUE);
+        else if (pathOption.equals("Trivial Path (Diagonals)")) {
+            ArrayList<Rectangle> path = performDiagonals();
+            Animation(path, Color.MAGENTA);
             int size = path.size();
             counter.setText(Integer.toString(size));
 
@@ -485,7 +485,7 @@ public class Homepage implements Initializable {
         }
     }
 
-    public ArrayList<Rectangle> performDijkstraDiagonals() {
+    public ArrayList<Rectangle> performDiagonals() {
         // find start and end nodes
         Rectangle startRectangle = findStartNode();
         Rectangle finalRectangle = findEndNode();
