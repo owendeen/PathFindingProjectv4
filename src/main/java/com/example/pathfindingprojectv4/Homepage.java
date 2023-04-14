@@ -223,7 +223,7 @@ public class Homepage implements Initializable {
         nodeIterator.next();
         nodeIterator.next().setFill(color);
         nodeIterator.next();
-        Iterator<Rectangle> nodeIteratorprevious =path.iterator();
+        Iterator<Rectangle> nodeIteratorprevious = path.iterator();
         nodeIteratorprevious.next();
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
             try {
