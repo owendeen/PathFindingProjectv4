@@ -6,8 +6,6 @@ import java.util.*;
 
 
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,10 +18,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 import javafx.event.EventHandler;
-import java.util.Timer;
 
 public class Homepage implements Initializable {
 
@@ -180,6 +176,9 @@ public class Homepage implements Initializable {
     @FXML
     private TextField timer;
 
+    @FXML
+    private TextField counter;
+
     public static class startTime{
         // Timer stuff -grayson
         private final long time;
@@ -215,22 +214,28 @@ public class Homepage implements Initializable {
         return cell.getFill().equals(Color.BLACK);
     }
     @FXML
-    public void findPath(ActionEvent event) {
+    public void findPath(ActionEvent event) throws InterruptedException {
         String pathOption = optionPath.getValue();
         if(pathOption.equals("Random Walk")){
             // 2 iterators one to mark the current rectangle and one to make the path gray
             ArrayList<Rectangle> path = performRandomWalk();
             Animation(path, Color.PURPLE);
+            int size = path.size();
+            counter.setText(Integer.toString(size));
 
             //timeline.setOnFinished(e -> findPathTraversal());
         }
         else if (pathOption.equals("A Star")){
             ArrayList<Rectangle> path = performAStar();
             Animation(path, Color.LIGHTGREEN);
+            int size = path.size();
+            counter.setText(Integer.toString(size));
         }
         else if (pathOption.equals("Dijkstra")){
             ArrayList<Rectangle> path = performDijkstra();
             Animation(path, Color.DEEPSKYBLUE);
+            int size = path.size();
+            counter.setText(Integer.toString(size));
 //            for(Rectangle item: path) {
 //                item.setFill(Color.DEEPSKYBLUE);
 //            }
@@ -238,6 +243,9 @@ public class Homepage implements Initializable {
         else if (pathOption.equals("DijkstraDiagonal")) {
             ArrayList<Rectangle> path = performDijkstraDiagonals();
             Animation(path, Color.DEEPSKYBLUE);
+            int size = path.size();
+            counter.setText(Integer.toString(size));
+
         }
     }
 
@@ -245,6 +253,8 @@ public class Homepage implements Initializable {
     public void Animation(ArrayList<Rectangle> path, Color color){
 
         startTime st = new startTime(System.currentTimeMillis());
+
+
 
         Iterator<Rectangle> nodeIterator = path.iterator();
         nodeIterator.next();
@@ -255,6 +265,7 @@ public class Homepage implements Initializable {
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
             try {
                 nodeIteratorprevious.next().setFill(Color.GREY);
+
                 nodeIterator.next().setFill(color); // iterator is rectangle
 
                 // Timer updates
@@ -273,6 +284,8 @@ public class Homepage implements Initializable {
 
     @FXML
     public void Reset(ActionEvent event){
+        counter.setText("");
+        timer.setText("");
         for(int row = 0; row < 15;  row++){
             for(int col = 0; col < 30; col++){
                 Rectangle value = rectangles[row][col];
@@ -703,6 +716,7 @@ public class Homepage implements Initializable {
                     path.add(node);
                 }
                 Collections.reverse(path);
+                path.remove(path.size() - 1);
                 return path;
             }
             closedSet.add(currentNode);
@@ -737,7 +751,6 @@ public class Homepage implements Initializable {
                 }
             }
         }
-
         return new ArrayList<>();
     }
 
@@ -781,8 +794,14 @@ class AStarNode implements Comparable<AStarNode> {
 }
     private int AStarHeuristic(Rectangle node, Rectangle goal) {
         // L1 Norm
-        int xDiff = Math.abs((int) node.getX() / 30 - (int) goal.getX() / 30);
-        int yDiff = Math.abs(((int) node.getY() - 40) / 30 - ((int) goal.getY() - 40) / 30);
+        double x1 = node.getX() / 30;
+        double x2 = goal.getX() / 30;
+        double y1 = (node.getY() - 40) / 30;
+        double y2 = (goal.getY() - 40) / 30;
+
+        int xDiff = (int) Math.abs(x2 - x1);
+        int yDiff = (int) Math.abs(y2 - y1);
+
         return xDiff + yDiff;
     }
 
