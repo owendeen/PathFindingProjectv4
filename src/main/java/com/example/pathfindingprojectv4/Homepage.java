@@ -77,7 +77,6 @@ public class Homepage implements Initializable {
             case "Wall" -> Color.BLACK;
             case "End" -> Color.RED;
             case "Start" -> Color.BLUE;
-            //case "Blank" -> Color.WHITE;
             default -> null;
         };
     }
