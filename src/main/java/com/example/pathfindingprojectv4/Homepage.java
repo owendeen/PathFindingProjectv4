@@ -280,13 +280,13 @@ public class Homepage implements Initializable {
     public ArrayList<Rectangle> performDijkstra() {
         // find start and end nodes
         Rectangle startRectangle = findStartNode();
-        Rectangle endRectangle = findEndNode();
+        Rectangle finalRectangle = findEndNode();
         Node[][] nodes = makeNodeArray();
         Node startnode = null;
         for (int row = 0; row < 15; row++){
-            for (int col = 0; col < 15; col++){
+            for (int col = 0; col < 30; col++){
                 if (nodes[row][col].getRectangle() != startRectangle){
-                    if (nodes[row][col].getRectangle().getFill() != Color.BLACK) {
+                    if (nodes[row][col].getFill() != Color.BLACK) {
                         nodes[row][col].setH(Double.POSITIVE_INFINITY);
                     }
                     else{
@@ -295,78 +295,98 @@ public class Homepage implements Initializable {
                 }
                 else{
                     startnode = nodes[row][col];
+                    startnode.setH(0);
                 }
             }
         }
-        Node[] nodepath = new Node[0];
-        if(startnode != null) {
-            nodepath = dijkstrahelper(startnode, nodepath, nodes);
+        Node[][] finalnodes = dijkstrahelper(startnode, nodes);
+        Node finalnode = finalnodes[(int)(finalRectangle.getY()-40)/30][(int)(finalRectangle.getX()/30)];
+        double h_sum = 0;
+        for(int row = 10; row >= 0; row--){
+            for(int col = 22; col >= 0; col--){
+                if(finalnodes[row][col].getH() > 0){
+                    h_sum += finalnodes[row][col].getH();
+                }
+            }
         }
+
 
 
         // create path
         ArrayList<Rectangle> path = new ArrayList<>(); // path to go
-        path.add(startRectangle);
-        for(int item = 1; item < nodepath.length; item++){
-            path.add(nodepath[item].getRectangle());
+
+        Node currentNode = finalnode;
+        while (currentNode.parentnode != null) {
+            Rectangle currentRectangle = currentNode.getRectangle();
+            path.add(currentRectangle);
+            currentNode = currentNode.parentnode;
         }
+
+        path.add(startRectangle);
 
         return path;
     }
 
-    public Node[] dijkstrahelper(Node node, Node[] nodePath, Node[][] nodes){
-        if (node.getFill() != Color.RED || (node.getFill() == Color.RED && node.parentnode == null)) {
-            double minH = Double.POSITIVE_INFINITY;
-            if (node.getH() == Double.POSITIVE_INFINITY) {
+    public Node[][] dijkstrahelper(Node node, Node[][] nodes){
+        node.visited = true;
+        if(Objects.equals(node.getFill(), Color.color(0.9, 0.9, 0.9))) {
+            node.getRectangle().setFill(Color.GRAY);
+        }
+        if (node.getFill() != Color.RED || (node.getFill() == Color.RED && !node.solved)) {
+            if (node.getH() >= 0 && !node.solved) {
+                boolean solved = true;
                 for (double row = node.getY() - 1; row <= node.getY() + 1; row++) {
                     for (double col = node.getY() - 1; col <= node.getY() + 1; col++) {
                         if (row >= 0 && row < 15 && col >= 0 && col < 30) {
                             Node currentnode = nodes[(int) row][(int) col];
-                            if (currentnode != node && currentnode.getH() != Double.POSITIVE_INFINITY && currentnode.getH() >= 0) {
-                                if (row == node.getY() || col == node.getY()) {
-                                    if (currentnode.getH() + 10 <= minH) {
-                                        minH = currentnode.getH() + 10;
-                                        node.parentnode = currentnode;
-                                    }
-                                } else {
-                                    if (currentnode.getH() + 14 < minH) {
-                                        minH = currentnode.getH() + 10;
-                                        node.parentnode = currentnode;
+                            if (currentnode.getH() != Double.NEGATIVE_INFINITY) {
+                                if (currentnode.getH() != Double.POSITIVE_INFINITY && !currentnode.solved && currentnode != node) {
+                                    solved = false;
+                                }
+                                double minH = currentnode.getH();
+                                if (currentnode != node && !currentnode.solved) {
+                                    if (row == node.getY() || col == node.getY()) {
+                                        if (node.getH() + 10 <= minH) {
+                                            minH = node.getH() + 10;
+                                            currentnode.parentnode = node;
+                                            currentnode.setH(minH);
+                                        }
+                                    } else {
+                                        if (node.getH() + 14 < minH) {
+                                            minH = node.getH() + 14;
+                                            currentnode.parentnode = node;
+                                            currentnode.setH(minH);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-                node.setH(minH);
-                nodes[(int)node.getY()][(int)node.getX()] = node;
-                Node[] temp = new Node[nodePath.length + 1];
-                for (int item = 0; item < nodePath.length; item++) {
-                    temp[item] = nodePath[item];
-                }
-                temp[nodePath.length] = node;
-                nodePath = temp;
 
+                node.solved = solved;
             }
+
 
             double minh = Double.POSITIVE_INFINITY;
             for (int row = 0; row < 15; row++) {
                 for (int col = 0; col < 30; col++) {
-                    if (nodes[row][col].getH() < minh && nodes[row][col].parentnode == null) {
-                        minh = nodes[row][col].getH();
+                    Node currentnode = nodes[row][col];
+                    if (currentnode.getH() > 0 && currentnode.getH() < minh && !currentnode.visited) {
+                        minh = currentnode.getH();
                     }
                 }
             }
             for (int row = 0; row < 15; row++) {
                 for (int col = 0; col < 30; col++) {
-                    if (nodes[row][col].getH() == minh && nodes[row][col].parentnode == null) {
-                        return dijkstrahelper(nodes[row][col], nodePath, nodes);
+                    Node currentnode = nodes[row][col];
+                    if (currentnode.getH() == minh && !currentnode.solved && !currentnode.visited) {
+                        return dijkstrahelper(currentnode, nodes);
                     }
                 }
             }
-
         }
-        return nodePath;
+        return nodes;
     }
 
     public Node[][] makeNodeArray(){
@@ -402,6 +422,31 @@ public class Homepage implements Initializable {
 
             }
         }
+        if(pathOption.equals("Dijkstra")){
+            // 2 iterators one to mark the current rectangle and one to make the path gray
+            ArrayList<Rectangle> path = performDijkstra();
+            Iterator<Rectangle> nodeIterator = path.iterator();
+            nodeIterator.next();
+            nodeIterator.next().setFill(Color.PURPLE);
+            nodeIterator.next();
+            Iterator<Rectangle> nodeIteratorprevious =path.iterator();
+            nodeIteratorprevious.next();
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
+                try {
+                    nodeIteratorprevious.next().setFill(Color.GREY);
+                    nodeIterator.next().setFill(Color.PURPLE); // iterator is rectangle
+
+                }catch (NoSuchElementException e){}
+
+            }));
+            timeline.setCycleCount(path.size() - 1);
+            timeline.playFromStart();
+
+            //timeline.setOnFinished(e -> findPathTraversal());
+
+
+        }
+
     }
 
     public void performGreedyBest(){
