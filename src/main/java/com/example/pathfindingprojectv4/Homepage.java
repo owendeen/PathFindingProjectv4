@@ -410,44 +410,44 @@ public class Homepage implements Initializable {
                 if (rectangles[row][col].getFill().equals(Color.BLACK)) {
                     node = new Node(rectangles[row][col], col, row, -1);
                 } else if (rectangles[row][col].getFill().equals(Color.BLUE)) {
-                    node = new Node(rectangles[row][col], col, row, calcHeuristic(rectangles[row][col], end.getRectangle()));
+                    node = new Node(rectangles[row][col], col, row, AStarHeuristic(rectangles[row][col], end.getRectangle()));
                     start = node;
                 } else if (rectangles[row][col].getFill().equals(Color.RED)) {
                     node = new Node(rectangles[row][col], col, row, 0);
                     end = node;
                 } else if (!rectangles[row][col].getFill().equals(Color.BLACK) || !rectangles[row][col].getFill().equals(Color.RED) || !rectangles[row][col].getFill().equals(Color.BLUE)) {
-                    node = new Node(rectangles[row][col], col, row, calcHeuristic(rectangles[row][col], end.getRectangle()));
+                    node = new Node(rectangles[row][col], col, row, AStarHeuristic(rectangles[row][col], end.getRectangle()));
                 }
                 nodes.add(node);
 
             }
         }
-        if(pathOption.equals("Dijkstra")){
-            // 2 iterators one to mark the current rectangle and one to make the path gray
-            ArrayList<Rectangle> path = performDijkstra();
-            Iterator<Rectangle> nodeIterator = path.iterator();
-            nodeIterator.next();
-            nodeIterator.next().setFill(Color.PURPLE);
-            nodeIterator.next();
-            Iterator<Rectangle> nodeIteratorprevious =path.iterator();
-            nodeIteratorprevious.next();
-            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
-                try {
-                    nodeIteratorprevious.next().setFill(Color.GREY);
-                    nodeIterator.next().setFill(Color.PURPLE); // iterator is rectangle
-
-                }catch (NoSuchElementException e){}
-
-            }));
-            timeline.setCycleCount(path.size() - 1);
-            timeline.playFromStart();
+//        if(pathOption.equals("Dijkstra")){
+//            // 2 iterators one to mark the current rectangle and one to make the path gray
+//            ArrayList<Rectangle> path = performDijkstra();
+//            Iterator<Rectangle> nodeIterator = path.iterator();
+//            nodeIterator.next();
+//            nodeIterator.next().setFill(Color.PURPLE);
+//            nodeIterator.next();
+//            Iterator<Rectangle> nodeIteratorprevious =path.iterator();
+//            nodeIteratorprevious.next();
+//            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
+//                try {
+//                    nodeIteratorprevious.next().setFill(Color.GREY);
+//                    nodeIterator.next().setFill(Color.PURPLE); // iterator is rectangle
+//
+//                }catch (NoSuchElementException e){}
+//
+//            }));
+//            timeline.setCycleCount(path.size() - 1);
+//            timeline.playFromStart();
 
             //timeline.setOnFinished(e -> findPathTraversal());
 
 
         }
 
-    }
+
 
     public void performGreedyBest(){
 
@@ -501,7 +501,7 @@ public class Homepage implements Initializable {
 
 
         gScore.put(startNode, 0); // (key, value)
-        fScore.put(startNode, calcHeuristic(startNode, endNode));
+        fScore.put(startNode, AStarHeuristic(startNode, endNode));
 
         openSet.add(new AStarNode(startNode, fScore.get(startNode)));
 
@@ -548,7 +548,7 @@ public class Homepage implements Initializable {
                 if (!openSet.contains(new AStarNode(neighbor, 0)) || tentativeGScore < gScore.get(neighbor)) {
                     cameFrom.put(neighbor, currentNode);
                     gScore.put(neighbor, tentativeGScore);
-                    fScore.put(neighbor, tentativeGScore + calcHeuristic(neighbor, endNode));
+                    fScore.put(neighbor, tentativeGScore + AStarHeuristic(neighbor, endNode));
                     if (!openSet.contains(new AStarNode(neighbor, 0))) {
                         openSet.add(new AStarNode(neighbor, fScore.get(neighbor)));
                     }
@@ -567,7 +567,6 @@ class AStarNode implements Comparable<AStarNode> {
         this.node = node;
         this.fScore = fScore;
     }
-
 
 
     public Rectangle getNode() {
@@ -596,9 +595,9 @@ class AStarNode implements Comparable<AStarNode> {
     public int hashCode() {
         return node.hashCode();
     }
-}
 
-    private int calcHeuristic(Rectangle node, Rectangle goal) {
+}
+    private int AStarHeuristic(Rectangle node, Rectangle goal) {
         // L1 Norm
         int xDiff = Math.abs((int) node.getX() / 30 - (int) goal.getX() / 30);
         int yDiff = Math.abs(((int) node.getY() - 40) / 30 - ((int) goal.getY() - 40) / 30);
