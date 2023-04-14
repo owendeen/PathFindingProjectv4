@@ -3,6 +3,7 @@ package com.example.pathfindingprojectv4;
 //package com.example.setuptest;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 import javafx.animation.KeyFrame;
@@ -95,12 +96,16 @@ public class Homepage implements Initializable {
 
     private void drawRectangle(MouseEvent event) {
         Color color = getColor(optionSelect.getValue());
+
         double mouseX = event.getX();
         double mouseY = event.getY();
         int x = (int) mouseX / 30; // num of col
-        int y = (int) (mouseY-40) / 30; // num of row
+        int y = (int) (mouseY - 40) / 30; // num of row
 
         Rectangle rectangle = rectangles[y][x];
+        if (rectangle.getFill().equals(Color.RED) || rectangle.getFill().equals(Color.GRAY) || rectangle.getFill().equals(Color.BLUE)){
+            color = Color.color(0.9, 0.9, 0.9);
+        }
         rectangle.setFill(color);
 
     }
@@ -228,14 +233,14 @@ public class Homepage implements Initializable {
         else if (pathOption.equals("A Star")){
             ArrayList<Rectangle> path = performAStar();
             Animation(path, Color.LIGHTGREEN);
-            int size = path.size();
-            counter.setText(Integer.toString(size));
+//            int size = path.size();
+//            counter.setText(Integer.toString(size));
         }
         else if (pathOption.equals("Dijkstra")){
             ArrayList<Rectangle> path = performDijkstra();
             Animation(path, Color.DEEPSKYBLUE);
-            int size = path.size();
-            counter.setText(Integer.toString(size));
+//            int size = path.size();
+//            counter.setText(Integer.toString(size));
 //            for(Rectangle item: path) {
 //                item.setFill(Color.DEEPSKYBLUE);
 //            }
@@ -253,8 +258,7 @@ public class Homepage implements Initializable {
     public void Animation(ArrayList<Rectangle> path, Color color){
 
         startTime st = new startTime(System.currentTimeMillis());
-
-
+        AtomicInteger count = new AtomicInteger(0);
 
         Iterator<Rectangle> nodeIterator = path.iterator();
         nodeIterator.next();
@@ -264,6 +268,10 @@ public class Homepage implements Initializable {
         nodeIteratorprevious.next();
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(75), ev -> {
             try {
+
+                int processedRectangles = count.incrementAndGet();
+                counter.setText(String.valueOf(processedRectangles) + " squares");
+
                 nodeIteratorprevious.next().setFill(Color.GREY);
 
                 nodeIterator.next().setFill(color); // iterator is rectangle
@@ -272,6 +280,8 @@ public class Homepage implements Initializable {
                 double elapsedTime = System.currentTimeMillis() - st.time;
                 double elapsedSeconds = elapsedTime / 1000;
                 timer.setText(elapsedSeconds + "s");
+
+
 
             }catch (NoSuchElementException e){}
 
