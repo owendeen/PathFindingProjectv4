@@ -23,6 +23,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import javafx.event.EventHandler;
+import java.util.Timer;
 
 public class Homepage implements Initializable {
 
@@ -172,7 +173,19 @@ public class Homepage implements Initializable {
     void clearWindow(ActionEvent event) {
 
         makeGrid(); // Clear button now works -zack g
+        timer.setText("0.0s");
 
+    }
+
+    @FXML
+    private TextField timer;
+
+    public static class startTime{
+        // Timer stuff -grayson
+        private final long time;
+        public startTime(long time){
+            this.time = time;
+        }
     }
 
     public Rectangle findStartNode() {
@@ -219,6 +232,9 @@ public class Homepage implements Initializable {
 
 
     public void Animation(ArrayList<Rectangle> path, Color color){
+
+        startTime st = new startTime(System.currentTimeMillis());
+
         Iterator<Rectangle> nodeIterator = path.iterator();
         nodeIterator.next();
         nodeIterator.next().setFill(color);
@@ -229,6 +245,11 @@ public class Homepage implements Initializable {
             try {
                 nodeIteratorprevious.next().setFill(Color.GREY);
                 nodeIterator.next().setFill(color); // iterator is rectangle
+
+                // Timer updates
+                double elapsedTime = System.currentTimeMillis() - st.time;
+                double elapsedSeconds = elapsedTime / 1000;
+                timer.setText(elapsedSeconds + "s");
 
             }catch (NoSuchElementException e){}
 
