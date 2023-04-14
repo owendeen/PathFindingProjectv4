@@ -245,7 +245,7 @@ public class Homepage implements Initializable {
                 nodeIteratorprevious.next().setFill(Color.GREY);
                 nodeIterator.next().setFill(color); // iterator is rectangle
 
-                // Timer updates
+                // Working timer updates
                 double elapsedTime = System.currentTimeMillis() - st.time;
                 double elapsedSeconds = elapsedTime / 1000;
                 timer.setText(elapsedSeconds + "s");
