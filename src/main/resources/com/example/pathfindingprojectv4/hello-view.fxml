@@ -10,6 +10,7 @@
         <ComboBox fx:id="optionSelect" layoutX="60.0" layoutY="9.0" onAction="#actionSelect" prefWidth="150.0" />
         <Button layoutX="360.0" layoutY="9.0" mnemonicParsing="false" onAction="#findPath" text="Find path" />
         <Button layoutX="14.0" layoutY="9.0" mnemonicParsing="false" onAction="#clearWindow" text="Clear" />
+        <Button layoutX="600.0" layoutY="9.0" mnemonicParsing="false" onAction="#Reset" text="Reset" />
         <ComboBox fx:id="optionPath" layoutX="210.0" layoutY="9.0" onAction="#actionSelect" prefWidth="150.0" />
       <TextField fx:id="timer" editable="false" layoutX="434.0" layoutY="9.0" promptText="0.0s" />
 

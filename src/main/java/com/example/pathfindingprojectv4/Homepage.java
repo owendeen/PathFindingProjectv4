@@ -261,6 +261,25 @@ public class Homepage implements Initializable {
         timeline.playFromStart();
     }
 
+
+    @FXML
+    public void Reset(ActionEvent event){
+        for(int row = 0; row < 15;  row++){
+            for(int col = 0; col < 30; col++){
+                Rectangle value = rectangles[row][col];
+                if(value.getFill().equals(Color.GRAY)){
+                    value.setFill(Color.color(0.9,0.9,0.9));
+                }}}
+    }
+
+
+
+
+
+
+
+
+
     public ArrayList<Rectangle> performRandomWalk() {
         // find start and end nodes
         Rectangle startNode = findStartNode();
@@ -361,9 +380,9 @@ public class Homepage implements Initializable {
                         for (double col = working_nodes[item].getX() - 1; col <= working_nodes[item].getX() + 1; col++) {
                             if (row >= 0 && row < 15 && col >= 0 && col < 30) {
                                 Node currentnode = nodes[(int) row][(int) col];
-                                if (Objects.equals(currentnode.getFill(), Color.color(0.9, 0.9, 0.9))) {
-                                    currentnode.getRectangle().setFill(Color.GRAY);
-                                }
+//                                if (Objects.equals(currentnode.getFill(), Color.color(0.9, 0.9, 0.9))) {
+//                                    currentnode.getRectangle().setFill(Color.GRAY);
+//                                }
                                 if (currentnode.getH() != Double.NEGATIVE_INFINITY) {
                                     double minH = currentnode.getH();
                                     if (currentnode != working_nodes[item] && !currentnode.solved) {
