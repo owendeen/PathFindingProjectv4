@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
@@ -59,7 +60,8 @@ public class Homepage implements Initializable {
                 "Random Walk",
                 "A Star",
                 "Dijkstra",
-                "Trivial Path (Diagonals)"
+                "Trivial Path (Diagonals)",
+                "Greedy Best First"
         );
 
         optionSelect.setItems(options);
@@ -251,6 +253,9 @@ public class Homepage implements Initializable {
             int size = path.size();
             counter.setText(Integer.toString(size));
 
+        } else if (pathOption.equals("Greedy Best First")) {
+            ArrayList<Rectangle> path = performGBS();
+            Animation(path, Color.CORAL);
         }
     }
 
@@ -630,50 +635,142 @@ public class Homepage implements Initializable {
     }
 
 //============================================================================================
-    public void makeNodes() {
-        Rectangle[][] list = rectangles;
-        for (int row = 0; row < 15; row++) {
-            for (int col = 0; col < 30; col++) {
-                Node node = null;
-                if (rectangles[row][col].getFill().equals(Color.BLACK)) {
-                    node = new Node(rectangles[row][col], col, row, -1);
-                } else if (rectangles[row][col].getFill().equals(Color.BLUE)) {
-                    node = new Node(rectangles[row][col], col, row, AStarHeuristic(rectangles[row][col], end.getRectangle()));
-                    start = node;
-                } else if (rectangles[row][col].getFill().equals(Color.RED)) {
-                    node = new Node(rectangles[row][col], col, row, 0);
-                    end = node;
-                } else if (!rectangles[row][col].getFill().equals(Color.BLACK) || !rectangles[row][col].getFill().equals(Color.RED) || !rectangles[row][col].getFill().equals(Color.BLUE)) {
-                    node = new Node(rectangles[row][col], col, row, AStarHeuristic(rectangles[row][col], end.getRectangle()));
+
+    public ArrayList<Rectangle> performGBS(){
+        Rectangle start = findStartNode();
+        Rectangle end = findEndNode();
+
+        ArrayList<Rectangle> visited = new ArrayList<>();
+
+        ArrayList<Rectangle> pathTaken = new ArrayList<>();
+
+        PriorityQueue<bfsNode> queue = new PriorityQueue<>();
+
+        queue.add(new bfsNode(start, bfsHeuristic(start, end)));
+
+        while(!queue.isEmpty()){
+            bfsNode current = queue.poll();
+            Rectangle currentNode = current.getNode();
+            visited.add(currentNode);
+            if(currentNode.equals(end)){
+                //pathTaken.add(end);
+                return pathTaken;
+            }
+            pathTaken.add(currentNode);
+            ArrayList<Rectangle> neighbors = new ArrayList<>();
+            int currentRow = (int) (currentNode.getY() - 40) / 30;
+            int currentCol = (int) currentNode.getX() / 30;
+            if ((currentRow > 0) && !isWall(rectangles[currentRow - 1][currentCol])) {
+                neighbors.add(rectangles[currentRow - 1][currentCol]); // up
+            }
+            if ((currentRow < 14) && !isWall(rectangles[currentRow + 1][currentCol])) {
+                neighbors.add(rectangles[currentRow + 1][currentCol]); // down
+            }
+            if ((currentCol > 0) && !isWall(rectangles[currentRow][currentCol - 1])) {
+                neighbors.add(rectangles[currentRow][currentCol - 1]); // left
+            }
+            if ((currentCol < 29) && !isWall(rectangles[currentRow][currentCol + 1])) {
+                neighbors.add(rectangles[currentRow][currentCol + 1]); // right
+            }
+            for(Rectangle neighbor : neighbors){
+                if(visited.contains(neighbor)){
+                    continue;
                 }
-                nodes.add(node);
-
+                queue.add(new bfsNode(neighbor, bfsHeuristic(neighbor, end)));
             }
+
         }
+
+        return new ArrayList<>();
+    }
+
+    public int bfsHeuristic(Rectangle current, Rectangle endNode){
+        double x1 = current.getX() / 30;
+        double x2 = endNode.getX() / 30;
+        double y1 = (current.getY() - 40) / 30;
+        double y2 = (endNode.getY() - 40) / 30;
+
+        int xDiff = (int) Math.abs(x2 - x1);
+        int yDiff = (int) Math.abs(y2 - y1);
+
+        return xDiff + yDiff;
+    }
+
+    class bfsNode implements Comparable<bfsNode>{
+
+        public final Rectangle node;
+        public final int hScore;
+
+        public boolean visited;
+
+        bfsNode(Rectangle node, int hScore){
+            this.node = node;
+            this.hScore = hScore;
+        }
+
+        public Rectangle getNode(){
+            return this.node;
+        }
+
+        public boolean isVisited(){return visited;}
+        public void setVisited(boolean visited){this.visited = visited;}
+
+        public int gethScore(){
+            return this.hScore;
+        }
+
+        @Override
+        public int compareTo(bfsNode other){return Integer.compare(this.hScore, other.gethScore());}
     }
 
 
 
-    public void performGreedyBest(){
 
 
-    }
-
-//    public double calcHeuristic(Rectangle current, Rectangle end){
-//        return Math.sqrt(Math.pow((end.getX()/30) - (current.getX()/30), 2 ) + Math.pow(((end.getX()-40)/30) - ((current.getX()-40)/30), 2 ));
+//    public void makeNodes() {
+//        Rectangle[][] list = rectangles;
+//        for (int row = 0; row < 15; row++) {
+//            for (int col = 0; col < 30; col++) {
+//                Node node = null;
+//                if (rectangles[row][col].getFill().equals(Color.BLACK)) {
+//                    node = new Node(rectangles[row][col], col, row, -1);
+//                } else if (rectangles[row][col].getFill().equals(Color.BLUE)) {
+//                    node = new Node(rectangles[row][col], col, row, AStarHeuristic(rectangles[row][col], end.getRectangle()));
+//                    start = node;
+//                } else if (rectangles[row][col].getFill().equals(Color.RED)) {
+//                    node = new Node(rectangles[row][col], col, row, 0);
+//                    end = node;
+//                } else if (!rectangles[row][col].getFill().equals(Color.BLACK) || !rectangles[row][col].getFill().equals(Color.RED) || !rectangles[row][col].getFill().equals(Color.BLUE)) {
+//                    node = new Node(rectangles[row][col], col, row, AStarHeuristic(rectangles[row][col], end.getRectangle()));
+//                }
+//                nodes.add(node);
+//
+//            }
+//        }
 //    }
-
-    public ArrayList<Node> Neighbors(Node current, ArrayList<Node> nodeList) {
-        ArrayList<Node> neighbors = new ArrayList<>();
-
-        for (Node node : nodeList) {
-            if (node.isVisited()) {
-                continue;
-            }
-
-        }
-        return null;
-    }
+//
+//
+//
+//    public void performGreedyBest(){
+//
+//
+//    }
+//
+////    public double calcHeuristic(Rectangle current, Rectangle end){
+////        return Math.sqrt(Math.pow((end.getX()/30) - (current.getX()/30), 2 ) + Math.pow(((end.getX()-40)/30) - ((current.getX()-40)/30), 2 ));
+////    }
+//
+//    public ArrayList<Node> Neighbors(Node current, ArrayList<Node> nodeList) {
+//        ArrayList<Node> neighbors = new ArrayList<>();
+//
+//        for (Node node : nodeList) {
+//            if (node.isVisited()) {
+//                continue;
+//            }
+//
+//        }
+//        return null;
+//    }
 
 
 
