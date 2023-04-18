@@ -124,6 +124,7 @@ public class Homepage implements Initializable {
         int x = (int) mouseX / 30; // num of col
         int y = (int) (mouseY - 40) / 30; // num of row
 
+        //Clears color of node back to white when node is clicked again
         Rectangle rectangle = rectangles[y][x];
         if (rectangle.getFill().equals(Color.RED) || rectangle.getFill().equals(Color.GRAY) || rectangle.getFill().equals(Color.BLUE)){
             color = Color.color(0.9, 0.9, 0.9);
