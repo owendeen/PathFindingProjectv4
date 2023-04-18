@@ -2,7 +2,10 @@ package com.example.pathfindingprojectv4;
 
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
-
+/**
+ *Node class used for Dijkstras
+ * Allows for the characteristics need to compare rectangles.
+ */
 public class Node implements Comparable<Node> {
     private Rectangle rectangle;
 

@@ -1,3 +1,23 @@
+/**
+ * @authors Owen Deen, Zack Lewis, Zack Glew, Carson Spitler, Grayson Frazee
+ * @date 4/18/23
+ * @course CSC-331
+ * @instructor Shauna White
+ * @project Pathfinding Algorithm Visualization
+ * @purpose Creates a GUI that allows the visualization of multiple pathfinding algorithms including:
+ *          - Random Walk
+ *          - Dijkstra
+ *          - A*
+ *          - Dijkstra (Allowing Diagonals)
+ *          - Greedy Best First (Shows traversal)
+ *          Allows user to place a Start node, an End node, and Walls that act as barriers.
+ *          Clear: Clears the whole grid
+ *          Reset: Resets the path, timer, and squares traveled. Keeping start, end, and wall nodes.
+ *          Find Path: Finds a path using the algorithm selected from the dropdown menu.
+ */
+
+
+
 package com.example.pathfindingprojectv4;
 
 //package com.example.setuptest;
@@ -194,6 +214,11 @@ public class Homepage implements Initializable {
         }
     }
 
+
+    /**
+     * Loops through each rectangle in the grid to find the start node
+     * @return rectangle that is the start node
+     */
     public Rectangle findStartNode() {
         for(int row = 0; row < 15;  row++){
             for(int col = 0; col < 30; col++){
@@ -206,6 +231,10 @@ public class Homepage implements Initializable {
         return null;
     }
 
+    /**
+     * Loops through each rectangle in the grid to find the end node
+     * @return rectangle that is the end node
+     */
     public Rectangle findEndNode() {
         for (int row = 0; row < 15; row++) {
             for (int col = 0; col < 30; col++) {
@@ -259,7 +288,12 @@ public class Homepage implements Initializable {
         }
     }
 
-
+    /**
+     * Allows for the animation of the path drawing.
+     *
+     * @param path ArrayList of rectangles that contains the path that the algorithm calculated..
+     * @param color Color of the path.
+     */
     public void Animation(ArrayList<Rectangle> path, Color color){
 
         startTime st = new startTime(System.currentTimeMillis());
@@ -310,12 +344,12 @@ public class Homepage implements Initializable {
     }
 
 
-
-
-
-
-
-
+    /**
+     * Random Walk:
+     * Looks at each neighbor of the current node and adds the neighbors into an ArrayList. Then chooses a random
+     * node from the Array of neighbors and sets it as the current node until in the end node is found.
+     * @return ArrayList containing the path taken to reach the end node.
+     */
 
     public ArrayList<Rectangle> performRandomWalk() {
         // find start and end nodes
@@ -357,6 +391,13 @@ public class Homepage implements Initializable {
         return path;
     }
 
+    /**
+     *Dijksras:
+     *  Finds the shortest path from the start to end node. Picks an unvisited node and calculates the distance to it
+     *  through each of its neighbors and updates the neighbors distance if smaller
+     * @return ArrayList containing the path taken.
+     */
+
     public ArrayList<Rectangle> performDijkstra() {
         // find start and end nodes
         Rectangle startRectangle = findStartNode();
@@ -367,7 +408,7 @@ public class Homepage implements Initializable {
             for (int col = 0; col < 30; col++){
                 if (nodes[row][col].getRectangle() != startRectangle){
                     if (nodes[row][col].getFill() != Color.BLACK) {
-                        nodes[row][col].setH(Double.POSITIVE_INFINITY);
+                        nodes[row][col].setH(Double.POSITIVE_INFINITY); //set h value of each available node to infinity
                     }
                     else{
                         nodes[row][col].setH(Double.NEGATIVE_INFINITY);
@@ -490,6 +531,10 @@ public class Homepage implements Initializable {
         }
     }
 
+    /**
+     * Dijkstras allowing for diagonals.
+     * @return ArrayList containing the path taken.
+     */
     public ArrayList<Rectangle> performDiagonals() {
         // find start and end nodes
         Rectangle startRectangle = findStartNode();
@@ -636,6 +681,14 @@ public class Homepage implements Initializable {
 
 //============================================================================================
 
+
+    /**
+     * Greedy Best First:
+     * Implements Pseudocode from this Wikipedia page - <a href="https://en.wikipedia.org/wiki/Best-first_search">...</a>
+     * Chooses a neighbor of the current node with the most promising heuristic score (how close it is to the end)
+     * and adds it to the queue.
+     * @return ArrayList containing nodes used to find the path.
+     */
     public ArrayList<Rectangle> performGBS(){
         Rectangle start = findStartNode();
         Rectangle end = findEndNode();
@@ -651,12 +704,14 @@ public class Homepage implements Initializable {
         while(!queue.isEmpty()){
             bfsNode current = queue.poll();
             Rectangle currentNode = current.getNode();
-            visited.add(currentNode);
+            visited.add(currentNode); //adding the current node to the visited arraylist
             if(currentNode.equals(end)){
                 //pathTaken.add(end);
                 return pathTaken;
             }
-            pathTaken.add(currentNode);
+            pathTaken.add(currentNode); // updating path
+
+            //checking all the neighbors
             ArrayList<Rectangle> neighbors = new ArrayList<>();
             int currentRow = (int) (currentNode.getY() - 40) / 30;
             int currentCol = (int) currentNode.getX() / 30;
@@ -676,7 +731,8 @@ public class Homepage implements Initializable {
                 if(visited.contains(neighbor)){
                     continue;
                 }
-                queue.add(new bfsNode(neighbor, bfsHeuristic(neighbor, end)));
+                queue.add(new bfsNode(neighbor, bfsHeuristic(neighbor, end)));//if the neighbor is not in the
+                                                                        //visited array add them to the queue
             }
 
         }
@@ -696,6 +752,10 @@ public class Homepage implements Initializable {
         return xDiff + yDiff;
     }
 
+    /**
+     * Node class used for the Greedy Best First algorithm
+     * allows for the characteristics needed to compare nodes.
+     */
     class bfsNode implements Comparable<bfsNode>{
 
         public final Rectangle node;
@@ -722,57 +782,6 @@ public class Homepage implements Initializable {
         @Override
         public int compareTo(bfsNode other){return Integer.compare(this.hScore, other.gethScore());}
     }
-
-
-
-
-
-//    public void makeNodes() {
-//        Rectangle[][] list = rectangles;
-//        for (int row = 0; row < 15; row++) {
-//            for (int col = 0; col < 30; col++) {
-//                Node node = null;
-//                if (rectangles[row][col].getFill().equals(Color.BLACK)) {
-//                    node = new Node(rectangles[row][col], col, row, -1);
-//                } else if (rectangles[row][col].getFill().equals(Color.BLUE)) {
-//                    node = new Node(rectangles[row][col], col, row, AStarHeuristic(rectangles[row][col], end.getRectangle()));
-//                    start = node;
-//                } else if (rectangles[row][col].getFill().equals(Color.RED)) {
-//                    node = new Node(rectangles[row][col], col, row, 0);
-//                    end = node;
-//                } else if (!rectangles[row][col].getFill().equals(Color.BLACK) || !rectangles[row][col].getFill().equals(Color.RED) || !rectangles[row][col].getFill().equals(Color.BLUE)) {
-//                    node = new Node(rectangles[row][col], col, row, AStarHeuristic(rectangles[row][col], end.getRectangle()));
-//                }
-//                nodes.add(node);
-//
-//            }
-//        }
-//    }
-//
-//
-//
-//    public void performGreedyBest(){
-//
-//
-//    }
-//
-////    public double calcHeuristic(Rectangle current, Rectangle end){
-////        return Math.sqrt(Math.pow((end.getX()/30) - (current.getX()/30), 2 ) + Math.pow(((end.getX()-40)/30) - ((current.getX()-40)/30), 2 ));
-////    }
-//
-//    public ArrayList<Node> Neighbors(Node current, ArrayList<Node> nodeList) {
-//        ArrayList<Node> neighbors = new ArrayList<>();
-//
-//        for (Node node : nodeList) {
-//            if (node.isVisited()) {
-//                continue;
-//            }
-//
-//        }
-//        return null;
-//    }
-
-
 
 //=========================================================================================
     /**
@@ -861,7 +870,11 @@ public class Homepage implements Initializable {
         return new ArrayList<>();
     }
 
-class AStarNode implements Comparable<AStarNode> {
+    /**
+     *Node class for the A* Algorithm
+     * allows for the characteristics needed to perform the A* algorithm.
+     */
+    class AStarNode implements Comparable<AStarNode> {
     private final Rectangle node;
     private final int fScore;
 
