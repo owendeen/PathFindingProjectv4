@@ -50,7 +50,7 @@ public class Homepage implements Initializable {
 
     Node start;
     Node end;
-
+    
     ArrayList<Node> nodes = new ArrayList<>();
     ArrayList<Node> pathTaken = new ArrayList<>();
 
@@ -117,6 +117,8 @@ public class Homepage implements Initializable {
 
 
     private void drawRectangle(MouseEvent event) {
+
+        try{
         Color color = getColor(optionSelect.getValue());
 
         double mouseX = event.getX();
@@ -131,6 +133,7 @@ public class Homepage implements Initializable {
         }
         rectangle.setFill(color);
 
+    }catch(NullPointerException | IndexOutOfBoundsException e){}
     }
 
     private void makeGrid() {
@@ -252,41 +255,40 @@ public class Homepage implements Initializable {
     }
     @FXML
     public void findPath(ActionEvent event) throws InterruptedException {
-        String pathOption = optionPath.getValue();
-        if(pathOption.equals("Random Walk")){
-            // 2 iterators one to mark the current rectangle and one to make the path gray
-            ArrayList<Rectangle> path = performRandomWalk();
-            Animation(path, Color.PURPLE);
-            int size = path.size();
-            counter.setText(Integer.toString(size));
+        try {
+            String pathOption = optionPath.getValue();
+            if (pathOption.equals("Random Walk")) {
+                // 2 iterators one to mark the current rectangle and one to make the path gray
+                ArrayList<Rectangle> path = performRandomWalk();
+                Animation(path, Color.PURPLE);
+                int size = path.size();
+                counter.setText(Integer.toString(size));
 
-            //timeline.setOnFinished(e -> findPathTraversal());
-        }
-        else if (pathOption.equals("A Star")){
-            ArrayList<Rectangle> path = performAStar();
-            Animation(path, Color.LIGHTGREEN);
+                //timeline.setOnFinished(e -> findPathTraversal());
+            } else if (pathOption.equals("A Star")) {
+                ArrayList<Rectangle> path = performAStar();
+                Animation(path, Color.LIGHTGREEN);
 //            int size = path.size();
 //            counter.setText(Integer.toString(size));
-        }
-        else if (pathOption.equals("Dijkstra")){
-            ArrayList<Rectangle> path = performDijkstra();
-            Animation(path, Color.DEEPSKYBLUE);
+            } else if (pathOption.equals("Dijkstra")) {
+                ArrayList<Rectangle> path = performDijkstra();
+                Animation(path, Color.DEEPSKYBLUE);
 //            int size = path.size();
 //            counter.setText(Integer.toString(size));
 //            for(Rectangle item: path) {
 //                item.setFill(Color.DEEPSKYBLUE);
 //            }
-        }
-        else if (pathOption.equals("Trivial Path (Diagonals)")) {
-            ArrayList<Rectangle> path = performDiagonals();
-            Animation(path, Color.MAGENTA);
-            int size = path.size();
-            counter.setText(Integer.toString(size));
+            } else if (pathOption.equals("Trivial Path (Diagonals)")) {
+                ArrayList<Rectangle> path = performDiagonals();
+                Animation(path, Color.MAGENTA);
+                int size = path.size();
+                counter.setText(Integer.toString(size));
 
-        } else if (pathOption.equals("Greedy Best First")) {
-            ArrayList<Rectangle> path = performGBS();
-            Animation(path, Color.CORAL);
-        }
+            } else if (pathOption.equals("Greedy Best First")) {
+                ArrayList<Rectangle> path = performGBS();
+                Animation(path, Color.CORAL);
+            }
+        }catch(NullPointerException e){}
     }
 
     /**
