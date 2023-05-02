@@ -54,7 +54,7 @@ public class Homepage implements Initializable {
     ArrayList<Node> nodes = new ArrayList<>();
     ArrayList<Node> pathTaken = new ArrayList<>();
 
-    Rectangle[][] rectangles = new Rectangle[15][30]; // array is [row][col]
+    Rectangle[][] rectangles = new Rectangle[29][57]; // array is [row][col]
 
     public AnchorPane gamePane;
 
@@ -143,10 +143,10 @@ public class Homepage implements Initializable {
 
         int indcROW = -1;
         // dependent on the row and col 15 x 30 and then each is 30 x 30
-        for (int row = 40; row < 490; row += 30) {
+        for (int row = 40; row < 910; row += 30) {
             indcROW += 1;
             int indcCOL = -1;
-            for (int col = 0; col < 900; col += 30) {
+            for (int col = 0; col < 1710; col += 30) {
                 indcCOL += 1;
                 Rectangle rectangle = new Rectangle();
                 rectangle.setHeight(30);
@@ -224,8 +224,8 @@ public class Homepage implements Initializable {
      * @return rectangle that is the start node
      */
     public Rectangle findStartNode() {
-        for(int row = 0; row < 15;  row++){
-            for(int col = 0; col < 30; col++){
+        for(int row = 0; row < 29;  row++){
+            for(int col = 0; col < 57; col++){
                 Rectangle value = rectangles[row][col];
                 if(value.getFill().equals(Color.BLUE)){
                     return value;
@@ -240,8 +240,8 @@ public class Homepage implements Initializable {
      * @return rectangle that is the end node
      */
     public Rectangle findEndNode() {
-        for (int row = 0; row < 15; row++) {
-            for (int col = 0; col < 30; col++) {
+        for (int row = 0; row < 29; row++) {
+            for (int col = 0; col < 57; col++) {
                 Rectangle value = rectangles[row][col];
                 if (value.getFill().equals(Color.RED)) {
                     return value;
@@ -338,12 +338,13 @@ public class Homepage implements Initializable {
     public void Reset(ActionEvent event){
         counter.setText("");
         timer.setText("");
-        for(int row = 0; row < 15;  row++){
-            for(int col = 0; col < 30; col++){
+        for(int row = 0; row < 29;  row++){
+            for(int col = 0; col < 57; col++){
                 Rectangle value = rectangles[row][col];
                 if(value.getFill().equals(Color.GRAY)){
                     value.setFill(Color.color(0.9,0.9,0.9));
                 }}}
+        timer.setText("0.0s");
     }
 
 
@@ -371,13 +372,13 @@ public class Homepage implements Initializable {
             if ((currentRow > 0) && !isWall(rectangles[currentRow-1][currentCol])) {
                 neighbors.add(rectangles[currentRow-1][currentCol]); // up
             }
-            if ((currentRow < 14) && !isWall(rectangles[currentRow+1][currentCol])) {
+            if ((currentRow < 28) && !isWall(rectangles[currentRow+1][currentCol])) {
                 neighbors.add(rectangles[currentRow+1][currentCol]); // down
             }
             if ((currentCol > 0) && !isWall(rectangles[currentRow][currentCol-1])) {
                 neighbors.add(rectangles[currentRow][currentCol-1]); // left
             }
-            if ((currentCol < 29) && !isWall(rectangles[currentRow][currentCol+1])) {
+            if ((currentCol < 56) && !isWall(rectangles[currentRow][currentCol+1])) {
                 neighbors.add(rectangles[currentRow][currentCol+1]); // right
             }
 
@@ -407,8 +408,8 @@ public class Homepage implements Initializable {
         Rectangle finalRectangle = findEndNode();
         Node[][] nodes = makeNodeArray();
         Node[] startnode = new Node[1];
-        for (int row = 0; row < 15; row++){
-            for (int col = 0; col < 30; col++){
+        for (int row = 0; row < 29; row++){
+            for (int col = 0; col < 57; col++){
                 if (nodes[row][col].getRectangle() != startRectangle){
                     if (nodes[row][col].getFill() != Color.BLACK) {
                         nodes[row][col].setH(Double.POSITIVE_INFINITY); //set h value of each available node to infinity
@@ -458,7 +459,7 @@ public class Homepage implements Initializable {
                 if (working_nodes[item].getH() >= 0) {
                     for (double row = working_nodes[item].getY() - 1; row <= working_nodes[item].getY() + 1; row++) {
                         for (double col = working_nodes[item].getX() - 1; col <= working_nodes[item].getX() + 1; col++) {
-                            if (row >= 0 && row < 15 && col >= 0 && col < 30) {
+                            if (row >= 0 && row < 29 && col >= 0 && col < 57) {
                                 Node currentnode = nodes[(int) row][(int) col];
 //                                if (Objects.equals(currentnode.getFill(), Color.color(0.9, 0.9, 0.9))) {
 //                                    currentnode.getRectangle().setFill(Color.GRAY);
@@ -493,8 +494,8 @@ public class Homepage implements Initializable {
             }
         }
         double minh = Double.POSITIVE_INFINITY;
-        for (int row = 0; row < 15; row++) {
-            for (int col = 0; col < 30; col++) {
+        for (int row = 0; row < 29; row++) {
+            for (int col = 0; col < 57; col++) {
                 Node currentnode = nodes[row][col];
                 if (currentnode.getH() > 0 && currentnode.getH() < minh && !currentnode.solved) {
                     minh = currentnode.getH();
@@ -503,8 +504,8 @@ public class Homepage implements Initializable {
         }
 
         int counter = 0;
-        for (int row = 0; row < 15; row++) {
-            for (int col = 0; col < 30; col++) {
+        for (int row = 0; row < 29; row++) {
+            for (int col = 0; col < 57; col++) {
                 Node currentnode = nodes[row][col];
                 if (currentnode.getH() == minh && !currentnode.solved) {
                     counter +=1;
@@ -516,8 +517,8 @@ public class Homepage implements Initializable {
             temp[i] = newWorking[i];
         }
         int counter1 = newWorking.length;
-        for (int row = 0; row < 15; row++) {
-            for (int col = 0; col < 30; col++) {
+        for (int row = 0; row < 29; row++) {
+            for (int col = 0; col < 57; col++) {
                 Node currentnode = nodes[row][col];
                 if (currentnode.getH() == minh && !currentnode.solved) {
                     temp[counter1] = currentnode;
@@ -544,8 +545,8 @@ public class Homepage implements Initializable {
         Rectangle finalRectangle = findEndNode();
         Node[][] nodes = makeNodeArray();
         Node[] startnode = new Node[1];
-        for (int row = 0; row < 15; row++){
-            for (int col = 0; col < 30; col++){
+        for (int row = 0; row < 29; row++){
+            for (int col = 0; col < 57; col++){
                 if (nodes[row][col].getRectangle() != startRectangle){
                     if (nodes[row][col].getFill() != Color.BLACK) {
                         nodes[row][col].setH(Double.POSITIVE_INFINITY);
@@ -595,7 +596,7 @@ public class Homepage implements Initializable {
                 if (working_nodes[item].getH() >= 0) {
                     for (double row = working_nodes[item].getY() - 1; row <= working_nodes[item].getY() + 1; row++) {
                         for (double col = working_nodes[item].getX() - 1; col <= working_nodes[item].getX() + 1; col++) {
-                            if (row >= 0 && row < 15 && col >= 0 && col < 30) {
+                            if (row >= 0 && row < 29 && col >= 0 && col < 57) {
                                 Node currentnode = nodes[(int) row][(int) col];
 //                                if (Objects.equals(currentnode.getFill(), Color.color(0.9, 0.9, 0.9))) {
 //                                    currentnode.getRectangle().setFill(Color.GRAY);
@@ -630,8 +631,8 @@ public class Homepage implements Initializable {
             }
         }
         double minh = Double.POSITIVE_INFINITY;
-        for (int row = 0; row < 15; row++) {
-            for (int col = 0; col < 30; col++) {
+        for (int row = 0; row < 29; row++) {
+            for (int col = 0; col < 57; col++) {
                 Node currentnode = nodes[row][col];
                 if (currentnode.getH() > 0 && currentnode.getH() < minh && !currentnode.solved) {
                     minh = currentnode.getH();
@@ -640,8 +641,8 @@ public class Homepage implements Initializable {
         }
 
         int counter = 0;
-        for (int row = 0; row < 15; row++) {
-            for (int col = 0; col < 30; col++) {
+        for (int row = 0; row < 29; row++) {
+            for (int col = 0; col < 57; col++) {
                 Node currentnode = nodes[row][col];
                 if (currentnode.getH() == minh && !currentnode.solved) {
                     counter +=1;
@@ -653,8 +654,8 @@ public class Homepage implements Initializable {
             temp[i] = newWorking[i];
         }
         int counter1 = newWorking.length;
-        for (int row = 0; row < 15; row++) {
-            for (int col = 0; col < 30; col++) {
+        for (int row = 0; row < 29; row++) {
+            for (int col = 0; col < 57; col++) {
                 Node currentnode = nodes[row][col];
                 if (currentnode.getH() == minh && !currentnode.solved) {
                     temp[counter1] = currentnode;
@@ -672,10 +673,10 @@ public class Homepage implements Initializable {
     }
     public Node[][] makeNodeArray(){
 
-        Node[][] nodeList = new Node[15][30];
+        Node[][] nodeList = new Node[29][57];
 
-        for( int row = 0; row < 15; row++){
-            for(int col =0; col < 30; col++ ){
+        for( int row = 0; row < 29; row++){
+            for(int col =0; col < 57; col++ ){
                 nodeList[row][col] = new Node(rectangles[row][col], row, col, 0);
             }
         }
@@ -721,13 +722,13 @@ public class Homepage implements Initializable {
             if ((currentRow > 0) && !isWall(rectangles[currentRow - 1][currentCol])) {
                 neighbors.add(rectangles[currentRow - 1][currentCol]); // up
             }
-            if ((currentRow < 14) && !isWall(rectangles[currentRow + 1][currentCol])) {
+            if ((currentRow < 28) && !isWall(rectangles[currentRow + 1][currentCol])) {
                 neighbors.add(rectangles[currentRow + 1][currentCol]); // down
             }
             if ((currentCol > 0) && !isWall(rectangles[currentRow][currentCol - 1])) {
                 neighbors.add(rectangles[currentRow][currentCol - 1]); // left
             }
-            if ((currentCol < 29) && !isWall(rectangles[currentRow][currentCol + 1])) {
+            if ((currentCol < 56) && !isWall(rectangles[currentRow][currentCol + 1])) {
                 neighbors.add(rectangles[currentRow][currentCol + 1]); // right
             }
             for(Rectangle neighbor : neighbors){
@@ -845,13 +846,13 @@ public class Homepage implements Initializable {
             if ((currentRow > 0) && !isWall(rectangles[currentRow - 1][currentCol])) {
                 neighbors.add(rectangles[currentRow - 1][currentCol]); // up
             }
-            if ((currentRow < 14) && !isWall(rectangles[currentRow + 1][currentCol])) {
+            if ((currentRow < 28) && !isWall(rectangles[currentRow + 1][currentCol])) {
                 neighbors.add(rectangles[currentRow + 1][currentCol]); // down
             }
             if ((currentCol > 0) && !isWall(rectangles[currentRow][currentCol - 1])) {
                 neighbors.add(rectangles[currentRow][currentCol - 1]); // left
             }
-            if ((currentCol < 29) && !isWall(rectangles[currentRow][currentCol + 1])) {
+            if ((currentCol < 56) && !isWall(rectangles[currentRow][currentCol + 1])) {
                 neighbors.add(rectangles[currentRow][currentCol + 1]); // right
             }
 
